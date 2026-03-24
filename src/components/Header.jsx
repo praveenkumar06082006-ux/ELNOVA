@@ -12,9 +12,9 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
   const [shopOpen, setShopOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 bg-elnova-purple">
-      <div className="flex h-8 w-full items-center justify-center bg-white px-4">
-        <Link to="/offers" className="font-heading text-xs font-bold text-elnova-purple hover:underline">
+    <header className="sticky top-0 z-40 bg-elnova-purple shadow-md">
+      <div className="flex w-full items-center justify-center bg-white px-4 py-2.5 shadow-sm">
+        <Link to="/offers" className="font-heading text-[15px] font-bold tracking-[0.1em] text-elnova-purple transition-colors hover:text-elnova-purple/80 hover:underline sm:text-base">
           OPENING OFFER (FREE SHIPPING)
         </Link>
       </div>
