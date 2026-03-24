@@ -13,10 +13,10 @@ export const ProductScrollSection = ({
       <h2 className="mb-4 px-1 font-heading text-2xl text-white">
         {title}
       </h2>
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
         {loading
           ? Array.from({ length: 3 }).map((_, index) => (
-              <ProductCardSkeleton key={`skeleton-${index}`} compact />
+              <ProductCardSkeleton key={`skeleton-${index}`} layout="scroll" />
             ))
           : products.map((product) => (
               <ProductCard
@@ -24,7 +24,7 @@ export const ProductScrollSection = ({
                 product={product}
                 isFavorite={favoriteIds.includes(product.id)}
                 onToggleFavorite={toggleFavorite}
-                compact
+                layout="scroll"
               />
             ))}
       </div>

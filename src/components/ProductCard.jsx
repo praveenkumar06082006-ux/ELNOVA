@@ -7,7 +7,7 @@ export const ProductCard = ({
   product,
   isFavorite,
   onToggleFavorite,
-  compact = false,
+  layout = 'list', // 'list', 'scroll', 'grid'
 }) => {
   const categoryLabel = Array.isArray(product.category)
     ? product.category.join(', ')
@@ -93,18 +93,23 @@ export const ProductCard = ({
 
   // Collapsed View
   if (!isExpanded) {
+    const layoutClasses = 
+      layout === 'scroll' ? 'min-w-[180px] max-w-[180px]' : 
+      layout === 'grid' ? 'w-full' : 'w-full'
+      
+    // Smaller height for 2-column layout so images aren't extremely tall
+    const imgHeight = layout === 'list' ? 'h-64' : 'h-[180px]'
+
     return (
       <article
         onClick={() => setIsExpanded(true)}
-        className={`cursor-pointer rounded-[20px] bg-[#3a1d60] p-3 shadow-lg ring-1 ring-white/10 transition-transform active:scale-95 flex flex-col ${
-          compact ? 'min-w-[200px] max-w-[200px]' : 'w-full'
-        }`}
+        className={`cursor-pointer rounded-[20px] bg-[#3a1d60] p-3 shadow-lg ring-1 ring-white/10 transition-transform active:scale-95 flex flex-col ${layoutClasses}`}
       >
         <div className="relative overflow-hidden rounded-[14px]">
           <img
             src={images[0]}
             alt={product.name}
-            className={`w-full object-cover ${compact ? 'h-[200px]' : 'h-64'}`}
+            className={`w-full object-cover ${imgHeight}`}
           />
           <button
             type="button"
