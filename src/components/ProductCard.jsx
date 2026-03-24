@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Heart, X } from 'lucide-react'
 
 const sizes = ['S', 'M', 'L', 'XL']
 
@@ -14,15 +14,18 @@ export const ProductCard = ({
     : String(product.category ?? '')
 
   const images = useMemo(
-    () => (product.images?.length ? product.images : ['https://picsum.photos/200']),
+    () => (product.images?.length ? product.images : ['https://picsum.photos/400']),
     [product.images],
   )
+  const [isExpanded, setIsExpanded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const [autoSlideRef, setAutoSlideRef] = useState(null)
+  
   const [size, setSize] = useState('M')
-  const [qty, setQty] = useState(1)
+  const [qtyRaw, setQtyRaw] = useState('1')
   const [customerName, setCustomerName] = useState('')
   const [phone, setPhone] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
 
   const stopAutoSlide = () => {
     if (autoSlideRef) {
@@ -33,9 +36,7 @@ export const ProductCard = ({
 
   useEffect(() => {
     return () => {
-      if (autoSlideRef) {
-        clearInterval(autoSlideRef)
-      }
+      if (autoSlideRef) clearInterval(autoSlideRef)
     }
   }, [autoSlideRef])
 
@@ -47,122 +48,246 @@ export const ProductCard = ({
     setAutoSlideRef(timer)
   }
 
-  const nextImage = () => {
+  const nextImage = (e) => {
+    e.stopPropagation()
     setActiveIndex((prev) => (prev + 1) % images.length)
   }
 
-  const prevImage = () => {
+  const prevImage = (e) => {
+    e.stopPropagation()
     setActiveIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
-  const whatsappMessage = encodeURIComponent(
-    `Product: ${product.name}
-Size: ${size}
-Qty: ${qty}
-Name: ${customerName || '-'}
-Phone: ${phone || '-'}
-Shipping: 4-7 days
-Order confirmation: Same day`,
-  )
+  const handleOrder = (e) => {
+    e.preventDefault()
+    if (!size || !qtyRaw || !customerName.trim() || !phone.trim()) {
+      setErrorMsg('All details are mandatory (name, phone, size, quantity).')
+      return
+    }
+    const numQty = Number(qtyRaw)
+    if (numQty < 1 || numQty > 99) {
+      setErrorMsg('Quantity must be between 1 and 99.')
+      return
+    }
+    setErrorMsg('')
+    
+    // Default fallback if order properties differ
+    const desc = product.description ? `\nDescription: ${product.description.slice(0, 50)}...` : ''
+    const whatsappMessage = encodeURIComponent(
+      `Product: ${product.name}\nSize: ${size}\nQty: ${numQty}\nName: ${customerName}\nPhone: ${phone}${desc}\nShipping: 4-7 days\nOrder confirmation: Same day`,
+    )
+    window.open(`https://wa.me/+919626291742?text=${whatsappMessage}`, '_blank')
+  }
 
-  return (
-    <article
-      className={`rounded-3xl bg-white p-3 shadow-md ring-1 ring-black/5 ${
-        compact ? 'min-w-[244px]' : 'w-full'
-      }`}
-    >
-      <div
-        className="relative overflow-hidden rounded-2xl bg-elnova-purple"
-        onMouseEnter={startAutoSlide}
-        onMouseLeave={stopAutoSlide}
-        onTouchStart={startAutoSlide}
-        onTouchEnd={stopAutoSlide}
+  const handleQtyChange = (e) => {
+    const val = e.target.value
+    if (val === '') {
+      setQtyRaw('')
+      return
+    }
+    const num = parseInt(val, 10)
+    if (!isNaN(num)) {
+      setQtyRaw(String(num))
+    }
+  }
+
+  // Collapsed View
+  if (!isExpanded) {
+    return (
+      <article
+        onClick={() => setIsExpanded(true)}
+        className={`cursor-pointer rounded-[20px] bg-[#3a1d60] p-3 shadow-lg ring-1 ring-white/10 transition-transform active:scale-95 flex flex-col ${
+          compact ? 'min-w-[200px] max-w-[200px]' : 'w-full'
+        }`}
       >
-        <img
-          src={images[activeIndex]}
-          alt={product.name}
-          className={`w-full object-cover ${compact ? 'h-36' : 'h-44'}`}
-        />
-        <button
-          type="button"
-          className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/60 p-1.5"
-          onClick={prevImage}
-        >
-          <ChevronLeft size={14} />
-        </button>
-        <button
-          type="button"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/60 p-1.5"
-          onClick={nextImage}
-        >
-          <ChevronRight size={14} />
-        </button>
-        <button
-          type="button"
-          onClick={() => onToggleFavorite(product.id)}
-          className="absolute right-2 top-2 rounded-full bg-white/85 p-1.5"
-          aria-label="Toggle favorite"
-        >
-          <Heart
-            size={14}
-            className={isFavorite ? 'fill-red-500 text-red-500' : 'text-elnova-purple'}
+        <div className="relative overflow-hidden rounded-[14px]">
+          <img
+            src={images[0]}
+            alt={product.name}
+            className={`w-full object-cover ${compact ? 'h-[200px]' : 'h-64'}`}
           />
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleFavorite(product.id)
+            }}
+            className="absolute right-2 top-2 rounded-full bg-black/40 p-1.5 backdrop-blur-sm"
+            aria-label="Toggle favorite"
+          >
+            <Heart
+              size={16}
+              className={isFavorite ? 'fill-elnova-yellow text-elnova-yellow' : 'text-white'}
+            />
+          </button>
+        </div>
+        <div className="flex flex-col flex-1 justify-end space-y-1 pt-3">
+          <h3 className="truncate font-heading text-lg leading-tight text-white">
+            {product.name}
+          </h3>
+          <p className="text-sm font-semibold text-elnova-yellow">₹{product.price}</p>
+        </div>
+      </article>
+    )
+  }
+
+  // Expanded View (Modal Overlay)
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-elnova-purple overflow-y-auto">
+      <div className="sticky top-0 z-10 flex items-center justify-between bg-elnova-purple/95 px-4 py-4 backdrop-blur-md border-b border-white/10">
+        <h2 className="font-heading text-xl text-white truncate pr-4">{product.name}</h2>
+        <button
+          onClick={() => setIsExpanded(false)}
+          className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
+        >
+          <X size={20} />
         </button>
       </div>
 
-      <div className="space-y-2 pt-3">
-        <h3 className="font-heading text-lg leading-tight text-elnova-purple">
-          {product.name}
-        </h3>
-        <p className="text-sm font-semibold text-black">₹{product.price}</p>
-        <p className="text-xs uppercase tracking-wide text-gray-500">
-          {categoryLabel}
-        </p>
-
-        <div className="grid grid-cols-2 gap-2">
-          <select
-            value={size}
-            onChange={(event) => setSize(event.target.value)}
-            className="rounded-xl border border-gray-200 px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-elnova-purple/30"
+      <div className="px-4 pb-8 pt-4 space-y-6">
+        <div
+          className="relative w-full overflow-hidden rounded-[24px] bg-black/20 ring-1 ring-white/10 shadow-xl"
+          onMouseEnter={startAutoSlide}
+          onMouseLeave={stopAutoSlide}
+          onTouchStart={startAutoSlide}
+          onTouchEnd={stopAutoSlide}
+        >
+          <img
+             src={images[activeIndex]}
+             alt={product.name}
+             className="w-full h-[400px] object-cover"
+          />
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md hover:bg-black/60 transition-colors"
+                onClick={prevImage}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white backdrop-blur-md hover:bg-black/60 transition-colors"
+                onClick={nextImage}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleFavorite(product.id)
+            }}
+            className="absolute right-3 top-3 rounded-full bg-black/40 p-2 backdrop-blur-md hover:bg-black/60 transition-colors"
+            aria-label="Toggle favorite"
           >
-            {sizes.map((label) => (
-              <option key={label} value={label}>
-                {label}
-              </option>
+            <Heart
+              size={20}
+              className={isFavorite ? 'fill-elnova-yellow text-elnova-yellow' : 'text-white'}
+            />
+          </button>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {images.map((_, i) => (
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === activeIndex ? 'w-5 bg-elnova-yellow' : 'w-1.5 bg-white/50'
+                }`}
+              />
             ))}
-          </select>
-          <input
-            type="number"
-            min="1"
-            value={qty}
-            onChange={(event) => setQty(Math.max(1, Number(event.target.value) || 1))}
-            className="rounded-xl border border-gray-200 px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-elnova-purple/30"
-          />
-          <input
-            type="text"
-            placeholder="Your name"
-            value={customerName}
-            onChange={(event) => setCustomerName(event.target.value)}
-            className="col-span-2 rounded-xl border border-gray-200 px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-elnova-purple/30"
-          />
-          <input
-            type="tel"
-            placeholder="Phone number"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            className="col-span-2 rounded-xl border border-gray-200 px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-elnova-purple/30"
-          />
+          </div>
         </div>
 
-        <a
-          href={`https://wa.me/+919626291742?text=${whatsappMessage}`}
-          target="_blank"
-          rel="noreferrer"
-          className="block rounded-full bg-elnova-yellow px-4 py-2 text-center text-sm font-semibold text-black shadow-sm"
-        >
-          Order Now
-        </a>
+        <div className="space-y-2 px-1">
+          <div className="flex items-start justify-between gap-4">
+            <h3 className="font-heading text-[28px] leading-tight text-white">{product.name}</h3>
+            <p className="text-2xl font-bold text-elnova-yellow">₹{product.price}</p>
+          </div>
+          <p className="text-sm font-medium uppercase tracking-wider text-white/50">
+            {categoryLabel}
+          </p>
+          {product.description && (
+            <p className="text-base text-white/85 leading-relaxed pt-2">
+              {product.description}
+            </p>
+          )}
+        </div>
+
+        <form className="space-y-4 rounded-[24px] bg-[#3a1d60] p-5 shadow-lg ring-1 ring-white/10" onSubmit={handleOrder}>
+          <h4 className="font-heading text-xl text-white mb-2">Order Details</h4>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5 flex flex-col">
+              <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Size <span className="text-elnova-peach">*</span></label>
+              <select
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                className="w-full flex-1 rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow"
+                required
+              >
+                <option value="" disabled>Select Size</option>
+                {sizes.map((label) => (
+                  <option key={label} value={label} className="text-black">
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="space-y-1.5 flex flex-col">
+               <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Quantity <span className="text-elnova-peach">*</span></label>
+               <input
+                 type="text"
+                 value={qtyRaw === '' ? '' : qtyRaw}
+                 placeholder="nil"
+                 onChange={handleQtyChange}
+                 className="w-full flex-1 rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow placeholder:text-white/30"
+                 required
+               />
+            </div>
+
+            <div className="col-span-2 space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Full Name <span className="text-elnova-peach">*</span></label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="w-full rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow placeholder:text-white/30"
+                required
+              />
+            </div>
+
+            <div className="col-span-2 space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Phone Number <span className="text-elnova-peach">*</span></label>
+              <input
+                type="tel"
+                placeholder="Enter your phone number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow placeholder:text-white/30"
+                required
+              />
+            </div>
+          </div>
+
+          {errorMsg && (
+            <div className="rounded-xl bg-red-500/10 p-3 mt-2">
+               <p className="text-sm font-medium text-red-300">{errorMsg}</p>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="mt-6 w-full rounded-full bg-elnova-yellow py-4 text-center text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-elnova-yellow/20 transition-transform hover:scale-[1.02] active:scale-95"
+          >
+            Confirm & Order via WhatsApp
+          </button>
+        </form>
       </div>
-    </article>
+    </div>
   )
 }

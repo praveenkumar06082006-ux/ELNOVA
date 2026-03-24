@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 const navClass = ({ isActive }) =>
   `block rounded-xl px-3 py-2 text-sm font-medium ${
-    isActive ? 'bg-elnova-purple text-white' : 'text-elnova-purple'
+    isActive ? 'bg-elnova-yellow text-black' : 'text-white'
   }`
 
 export const Header = ({ favoritesCount, onOpenFavorites }) => {
@@ -12,22 +12,22 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
   const [shopOpen, setShopOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 bg-white">
-      <div className="flex h-8 items-center justify-center border-b border-gray-100 bg-white px-4">
-        <p className="font-heading text-xs text-black">
+    <header className="sticky top-0 z-40 bg-elnova-purple">
+      <div className="flex h-8 items-center justify-center border-b border-white/10 bg-elnova-purple px-4">
+        <Link to="/offers" className="font-heading text-xs text-elnova-yellow hover:underline">
           OPENING OFFER (FREE SHIPPING)
-        </p>
+        </Link>
       </div>
 
-      <div className="flex h-14 items-center justify-between border-b border-gray-100 px-4">
-        <Link to="/" className="font-heading text-2xl font-bold text-elnova-purple">
+      <div className="flex h-14 items-center justify-between border-b border-white/10 px-4">
+        <Link to="/" className="font-heading text-2xl font-bold text-white">
           ELNOVA
         </Link>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onOpenFavorites}
-            className="relative rounded-full p-2 text-elnova-purple"
+            className="relative rounded-full p-2 text-white"
             aria-label="Open favorites"
           >
             <Heart size={18} />
@@ -40,7 +40,7 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
           <button
             type="button"
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="rounded-full p-2 text-elnova-purple"
+            className="rounded-full p-2 text-white"
             aria-label="Toggle menu"
           >
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -49,14 +49,14 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
       </div>
 
       {menuOpen && (
-        <nav className="space-y-1 border-b border-gray-100 bg-white px-4 py-3">
+        <nav className="space-y-1 border-b border-white/10 bg-elnova-purple px-4 py-3">
           <NavLink to="/" className={navClass} onClick={() => setMenuOpen(false)}>
             Home
           </NavLink>
           <button
             type="button"
             onClick={() => setShopOpen((prev) => !prev)}
-            className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-medium text-elnova-purple"
+            className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-medium text-white"
           >
             Shop
             <ChevronDown size={16} />
@@ -92,14 +92,14 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
               onOpenFavorites()
               setMenuOpen(false)
             }}
-            className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-elnova-purple"
+            className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-white"
           >
             Favorites
           </button>
           <a
             href="#about"
             onClick={() => setMenuOpen(false)}
-            className="block rounded-xl px-3 py-2 text-sm font-medium text-elnova-purple"
+            className="block rounded-xl px-3 py-2 text-sm font-medium text-white"
           >
             About Us
           </a>

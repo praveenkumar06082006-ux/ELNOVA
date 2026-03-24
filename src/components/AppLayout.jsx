@@ -22,7 +22,7 @@ export const AppLayout = () => {
   }
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-[480px] bg-white shadow-xl">
+    <div className="min-h-screen w-full bg-elnova-purple shadow-xl">
       <Header
         favoritesCount={favoriteIds.length}
         onOpenFavorites={() => setIsFavoritesOpen(true)}
