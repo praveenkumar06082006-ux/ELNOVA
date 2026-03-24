@@ -13,8 +13,8 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-elnova-purple">
-      <div className="flex h-8 items-center justify-center border-b border-white/10 bg-elnova-purple px-4">
-        <Link to="/offers" className="font-heading text-xs text-elnova-yellow hover:underline">
+      <div className="flex h-8 w-full items-center justify-center bg-white px-4">
+        <Link to="/offers" className="font-heading text-xs font-bold text-elnova-purple hover:underline">
           OPENING OFFER (FREE SHIPPING)
         </Link>
       </div>
