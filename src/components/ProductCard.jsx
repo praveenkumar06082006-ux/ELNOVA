@@ -265,7 +265,7 @@ export const ProductCard = ({
           )}
         </div>
 
-        <form className="space-y-4 rounded-[24px] bg-[#3a1d60] p-5 shadow-lg ring-1 ring-white/10" onSubmit={handleOrder}>
+        <form className="space-y-3 rounded-[24px] bg-[#3a1d60] p-3 shadow-lg ring-1 ring-white/10" onSubmit={handleOrder}>
           <h4 className="font-heading text-xl text-white mb-2">Order Details</h4>
           
           <div className="grid grid-cols-2 gap-4">
