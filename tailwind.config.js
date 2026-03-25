@@ -12,6 +12,9 @@ export default {
         heading: ['Marcellus', 'serif'],
         body: ['Jost', 'sans-serif'],
       },
+      textShadow: {
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.3)',
+      },
     },
   },
   plugins: [],

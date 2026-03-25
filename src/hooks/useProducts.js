@@ -17,6 +17,7 @@ const toProductShape = (item, fallbackId) => {
     price: Number(item.price ?? 0),
     category,
     images: Array.isArray(item.images) ? item.images.filter(Boolean).slice(0, 3) : [],
+    shortDescription: String(item['short description'] ?? item.shortDescription ?? item.short_description ?? item.description ?? '').trim(),
   }
 }
 

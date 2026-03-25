@@ -15,6 +15,9 @@ export const ProductCard = ({
     ? product.category.join(', ')
     : String(product.category ?? '')
 
+  const descText = product.shortDescription || product["short description"] || product.shortDescription || product.short_description || product.description || ''
+
+
   const images = useMemo(
     () => (product.images?.length ? product.images : ['https://picsum.photos/400']),
     [product.images],
@@ -80,7 +83,6 @@ export const ProductCard = ({
     setErrorMsg('')
     
     // Default fallback if order properties differ
-    const descText = product["short description"] || product.description || ''
     const desc = descText ? `\nDescription: ${descText}` : ''
     const firstImage = images && images.length > 0 ? `\nImage: ${images[0]}` : ''
     const whatsappMessage = encodeURIComponent(
@@ -141,6 +143,11 @@ export const ProductCard = ({
             {product.name}
           </h3>
           <p className="text-sm font-semibold text-elnova-yellow">₹{product.price}</p>
+          {descText && (
+            <p className="text-xs text-white/60 line-clamp-2 mt-1.5 text-shadow-sm">
+              {descText}
+            </p>
+          )}
         </div>
       </article>
     )
@@ -170,7 +177,7 @@ export const ProductCard = ({
           <img
              src={images[activeIndex]}
              alt={product.name}
-             className="w-full h-[400px] object-cover"
+             className="w-full h-[320px] object-cover"
           />
           {images.length > 1 && (
             <>
@@ -224,17 +231,17 @@ export const ProductCard = ({
           <p className="text-sm font-medium uppercase tracking-wider text-white/50">
             {categoryLabel}
           </p>
-          {(product["short description"] || product.description) && (
+          {descText && (
             <div className="pt-2 flex flex-col items-start">
-              <p className={`text-base text-white/85 leading-relaxed transition-all ${!showFullDesc ? 'line-clamp-2' : ''}`}>
-                {product["short description"] || product.description}
+              <p className={`text-base text-white/85 leading-relaxed whitespace-pre-wrap transition-all ${!showFullDesc ? 'line-clamp-3' : ''}`}>
+                {descText}
               </p>
               <button 
                 type="button"
                 onClick={() => setShowFullDesc(!showFullDesc)}
                 className="mt-1 flex items-center gap-1 text-sm font-medium text-elnova-yellow hover:text-yellow-400 transition-colors"
               >
-                {showFullDesc ? 'Show Less' : 'Read More'}
+                {showFullDesc ? 'Show Less' : 'Show More'}
                 <svg className={`w-4 h-4 transition-transform ${showFullDesc ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -309,7 +316,7 @@ export const ProductCard = ({
 
           <button
             type="submit"
-            className="mt-6 w-full rounded-full bg-elnova-yellow py-4 text-center text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-elnova-yellow/20 transition-transform hover:scale-[1.02] active:scale-95"
+            className="mt-4 w-full rounded-full bg-elnova-yellow py-3 text-center text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-elnova-yellow/20 transition-transform hover:scale-[1.02] active:scale-95"
           >
             Confirm & Order via WhatsApp
           </button>
