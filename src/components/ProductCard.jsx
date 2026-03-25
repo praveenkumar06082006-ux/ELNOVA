@@ -19,8 +19,23 @@ export const ProductCard = ({
 
 
   const images = useMemo(
-    () => (product.images?.length ? product.images : ['https://picsum.photos/400']),
-    [product.images],
+    () => {
+      // Handle different image formats from Firebase
+      if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+        return product.images.filter(Boolean)
+      }
+      // Handle single image string
+      if (product.image && typeof product.image === 'string') {
+        return [product.image]
+      }
+      // Handle single image in images field as string
+      if (typeof product.images === 'string') {
+        return [product.images]
+      }
+      // Fallback to placeholder
+      return ['https://picsum.photos/400']
+    },
+    [product.images, product.image],
   )
   const [isExpanded, setIsExpanded] = useState(initiallyExpanded)
   const [showFullDesc, setShowFullDesc] = useState(false)
@@ -144,7 +159,7 @@ export const ProductCard = ({
           </h3>
           <p className="text-sm font-semibold text-elnova-yellow">₹{product.price}</p>
           {descText && (
-            <p className="text-xs text-white/60 line-clamp-2 mt-1.5 text-shadow-sm">
+            <p className="font-heading text-xs text-white/70 line-clamp-2 mt-1.5 text-shadow-sm leading-relaxed">
               {descText}
             </p>
           )}
