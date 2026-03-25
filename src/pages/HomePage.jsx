@@ -113,7 +113,7 @@ export const HomePage = () => {
   return (
     <div className="flex w-full flex-col gap-2 pb-6">
       <section 
-        className="relative w-full bg-elnova-purple px-4 py-12 text-center overflow-hidden min-h-[320px] flex flex-col justify-center cursor-grab active:cursor-grabbing"
+        className="relative w-full bg-elnova-purple px-4 py-8 text-center overflow-hidden min-h-[240px] flex flex-col justify-center cursor-grab active:cursor-grabbing"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
