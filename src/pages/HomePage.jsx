@@ -16,7 +16,7 @@ const banners = [
     subtitleBottom: 'with affordable price',
   },
   {
-    subtitleTop: 'Limited offers',
+    subtitleTop: <span className="text-elnova-yellow">Limited offers</span>,
     title: (
       <span className="flex flex-col items-center justify-center">
          <span className="text-[28px] sm:text-4xl leading-tight">JUST Starting from</span>
@@ -113,7 +113,7 @@ export const HomePage = () => {
   return (
     <div className="flex w-full flex-col gap-2 pb-6">
       <section 
-        className="relative w-full bg-elnova-purple px-4 py-16 text-center overflow-hidden min-h-[280px] flex flex-col justify-center cursor-grab active:cursor-grabbing"
+        className="relative w-full bg-elnova-purple px-4 py-12 text-center overflow-hidden min-h-[320px] flex flex-col justify-center cursor-grab active:cursor-grabbing"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -154,7 +154,7 @@ export const HomePage = () => {
         <button
           type="button"
           onClick={() => navigate('/offers')}
-          className="w-full rounded-full bg-elnova-yellow px-8 py-3.5 text-base font-bold uppercase tracking-wide text-black hover:bg-yellow-400 transition-transform active:scale-95 shadow-[0_4px_14px_rgba(255,216,77,0.3)]"
+          className="w-full rounded-full bg-elnova-yellow px-8 py-3 text-base font-bold uppercase tracking-wide text-black hover:bg-yellow-400 transition-transform active:scale-95 shadow-[0_4px_14px_rgba(255,216,77,0.3)]"
         >
           Buy Now
         </button>

@@ -3,12 +3,14 @@ import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import { FavoritesDrawer } from './FavoritesDrawer'
+import { ProductCard } from './ProductCard'
 import { useProducts } from '../hooks/useProducts'
 
 export const AppLayout = () => {
   const { products, loading, error } = useProducts()
   const [favoriteIds, setFavoriteIds] = useState([])
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
+  const [selectedFavoriteProduct, setSelectedFavoriteProduct] = useState(null)
 
   const favorites = useMemo(
     () => products.filter((item) => favoriteIds.includes(item.id)),
@@ -43,7 +45,22 @@ export const AppLayout = () => {
         isOpen={isFavoritesOpen}
         favorites={favorites}
         onClose={() => setIsFavoritesOpen(false)}
+        onSelect={(product) => {
+          setSelectedFavoriteProduct(product)
+          setIsFavoritesOpen(false) // optionally close drawer when opening product
+        }}
       />
+      {selectedFavoriteProduct && (
+        <div className="fixed inset-0 z-[60]">
+          <ProductCard
+            product={selectedFavoriteProduct}
+            isFavorite={favoriteIds.includes(selectedFavoriteProduct.id)}
+            onToggleFavorite={toggleFavorite}
+            initiallyExpanded={true}
+            onClose={() => setSelectedFavoriteProduct(null)}
+          />
+        </div>
+      )}
     </div>
   )
 }

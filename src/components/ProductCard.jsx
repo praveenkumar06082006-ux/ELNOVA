@@ -8,6 +8,8 @@ export const ProductCard = ({
   isFavorite,
   onToggleFavorite,
   layout = 'list', // 'list', 'scroll', 'grid'
+  initiallyExpanded = false,
+  onClose,
 }) => {
   const categoryLabel = Array.isArray(product.category)
     ? product.category.join(', ')
@@ -17,7 +19,8 @@ export const ProductCard = ({
     () => (product.images?.length ? product.images : ['https://picsum.photos/400']),
     [product.images],
   )
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(initiallyExpanded)
+  const [showFullDesc, setShowFullDesc] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const [autoSlideRef, setAutoSlideRef] = useState(null)
   
@@ -26,6 +29,11 @@ export const ProductCard = ({
   const [customerName, setCustomerName] = useState('')
   const [phone, setPhone] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+
+  const handleClose = () => {
+    setIsExpanded(false)
+    if (onClose) onClose()
+  }
 
   const stopAutoSlide = () => {
     if (autoSlideRef) {
@@ -72,9 +80,11 @@ export const ProductCard = ({
     setErrorMsg('')
     
     // Default fallback if order properties differ
-    const desc = product.description ? `\nDescription: ${product.description.slice(0, 50)}...` : ''
+    const descText = product["short description"] || product.description || ''
+    const desc = descText ? `\nDescription: ${descText}` : ''
+    const firstImage = images && images.length > 0 ? `\nImage: ${images[0]}` : ''
     const whatsappMessage = encodeURIComponent(
-      `Product: ${product.name}\nSize: ${size}\nQty: ${numQty}\nName: ${customerName}\nPhone: ${phone}${desc}\nShipping: 4-7 days\nOrder confirmation: Same day`,
+      `Product: ${product.name}\nSize: ${size}\nQty: ${numQty}\nName: ${customerName}\nPhone: ${phone}${firstImage}${desc}\nShipping: 4-7 days\nOrder confirmation: Same day`,
     )
     window.open(`https://wa.me/+919626291742?text=${whatsappMessage}`, '_blank')
   }
@@ -142,7 +152,7 @@ export const ProductCard = ({
       <div className="sticky top-0 z-10 flex items-center justify-between bg-elnova-purple/95 px-4 py-4 backdrop-blur-md border-b border-white/10">
         <h2 className="font-heading text-xl text-white truncate pr-4">{product.name}</h2>
         <button
-          onClick={() => setIsExpanded(false)}
+          onClick={handleClose}
           className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors"
         >
           <X size={20} />
@@ -214,10 +224,22 @@ export const ProductCard = ({
           <p className="text-sm font-medium uppercase tracking-wider text-white/50">
             {categoryLabel}
           </p>
-          {product.description && (
-            <p className="text-base text-white/85 leading-relaxed pt-2">
-              {product.description}
-            </p>
+          {(product["short description"] || product.description) && (
+            <div className="pt-2 flex flex-col items-start">
+              <p className={`text-base text-white/85 leading-relaxed transition-all ${!showFullDesc ? 'line-clamp-2' : ''}`}>
+                {product["short description"] || product.description}
+              </p>
+              <button 
+                type="button"
+                onClick={() => setShowFullDesc(!showFullDesc)}
+                className="mt-1 flex items-center gap-1 text-sm font-medium text-elnova-yellow hover:text-yellow-400 transition-colors"
+              >
+                {showFullDesc ? 'Show Less' : 'Read More'}
+                <svg className={`w-4 h-4 transition-transform ${showFullDesc ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
           )}
         </div>
 
