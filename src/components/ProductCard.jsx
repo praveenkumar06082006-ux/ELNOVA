@@ -17,6 +17,35 @@ export const ProductCard = ({
 
   const descText = product.shortDescription || product["short description"] || product.shortDescription || product.short_description || product.description || ''
 
+  // Get sizes from Firebase product data
+  const availableSizes = useMemo(() => {
+    if (product.sizes && Array.isArray(product.sizes)) {
+      return product.sizes.filter(Boolean)
+    }
+    if (product.size && typeof product.size === 'string') {
+      return [product.size]
+    }
+    if (product.size && Array.isArray(product.size)) {
+      return product.size.filter(Boolean)
+    }
+    // Fallback to default sizes if no sizes in Firebase
+    return sizes
+  }, [product.sizes, product.size])
+
+  const [size, setSize] = useState(() => {
+    // Get initial size from product data
+    if (product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
+      return product.sizes[0]
+    }
+    if (product.size && typeof product.size === 'string') {
+      return product.size
+    }
+    if (product.size && Array.isArray(product.size) && product.size.length > 0) {
+      return product.size[0]
+    }
+    return 'M' // fallback
+  })
+
 
   const images = useMemo(
     () => {
@@ -42,7 +71,6 @@ export const ProductCard = ({
   const [activeIndex, setActiveIndex] = useState(0)
   const [autoSlideRef, setAutoSlideRef] = useState(null)
   
-  const [size, setSize] = useState('M')
   const [qtyRaw, setQtyRaw] = useState('1')
   const [customerName, setCustomerName] = useState('')
   const [phone, setPhone] = useState('')
@@ -158,11 +186,6 @@ export const ProductCard = ({
             {product.name}
           </h3>
           <p className="text-sm font-semibold text-elnova-yellow">₹{product.price}</p>
-          {descText && (
-            <p className="font-heading text-xs text-white/70 line-clamp-2 mt-1.5 text-shadow-sm leading-relaxed">
-              {descText}
-            </p>
-          )}
         </div>
       </article>
     )
@@ -278,7 +301,7 @@ export const ProductCard = ({
                 required
               >
                 <option value="" disabled>Select Size</option>
-                {sizes.map((label) => (
+                {availableSizes.map((label) => (
                   <option key={label} value={label} className="text-black">
                     {label}
                   </option>
