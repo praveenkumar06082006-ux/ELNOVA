@@ -19,13 +19,16 @@ export const ProductCard = ({
 
   // Get sizes from Firebase product data - no defaults, only what's in Firebase
   const availableSizes = useMemo(() => {
-    // Only use exactly what's in Firebase sizes field (array format)
-    if (product.sizes && Array.isArray(product.sizes)) {
-      return product.sizes.filter(Boolean)
+    // Read from 'size' field in Firebase
+    if (product.size && Array.isArray(product.size)) {
+      return product.size.filter(Boolean)
     }
-    // Return empty array if no sizes data in Firebase
+    if (product.size && typeof product.size === 'string') {
+      return [product.size]
+    }
+    // Return empty array if no size data in Firebase
     return []
-  }, [product.sizes])
+  }, [product.size])
 
   const [size, setSize] = useState('') // Start with empty, no pre-fill
 
