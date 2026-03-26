@@ -18,6 +18,7 @@ const toProductShape = (item, fallbackId) => {
     category,
     images: Array.isArray(item.images) ? item.images.filter(Boolean).slice(0, 3) : (item.image ? [item.image] : []),
     shortDescription: String(item['short description'] ?? item.shortDescription ?? item.short_description ?? item.description ?? '').trim(),
+    size: item.size, // Include size field from Firebase
   }
 }
 
