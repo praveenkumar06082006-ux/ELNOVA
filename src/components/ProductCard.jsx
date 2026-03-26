@@ -17,34 +17,20 @@ export const ProductCard = ({
 
   const descText = product.shortDescription || product["short description"] || product.shortDescription || product.short_description || product.description || ''
 
-  // Get sizes from Firebase product data
+  // Get sizes from Firebase product data - no defaults, only what's in Firebase
   const availableSizes = useMemo(() => {
-    if (product.sizes && Array.isArray(product.sizes)) {
-      return product.sizes.filter(Boolean)
-    }
+    // Only use exactly what's in Firebase size field
     if (product.size && typeof product.size === 'string') {
       return [product.size]
     }
     if (product.size && Array.isArray(product.size)) {
       return product.size.filter(Boolean)
     }
-    // Fallback to default sizes if no sizes in Firebase
-    return sizes
-  }, [product.sizes, product.size])
+    // Return empty array if no size data in Firebase
+    return []
+  }, [product.size])
 
-  const [size, setSize] = useState(() => {
-    // Get initial size from product data
-    if (product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
-      return product.sizes[0]
-    }
-    if (product.size && typeof product.size === 'string') {
-      return product.size
-    }
-    if (product.size && Array.isArray(product.size) && product.size.length > 0) {
-      return product.size[0]
-    }
-    return 'M' // fallback
-  })
+  const [size, setSize] = useState('') // Start with empty, no pre-fill
 
 
   const images = useMemo(
@@ -114,8 +100,10 @@ export const ProductCard = ({
 
   const handleOrder = (e) => {
     e.preventDefault()
-    if (!size || !qtyRaw || !customerName.trim() || !phone.trim()) {
-      setErrorMsg('All details are mandatory (name, phone, size, quantity).')
+    // Only validate size if sizes are available
+    const sizeRequired = availableSizes.length > 0
+    if ((sizeRequired && !size) || !qtyRaw || !customerName.trim() || !phone.trim()) {
+      setErrorMsg(sizeRequired ? 'All details are mandatory (name, phone, size, quantity).' : 'All details are mandatory (name, phone, quantity).')
       return
     }
     const numQty = Number(qtyRaw)
@@ -128,8 +116,9 @@ export const ProductCard = ({
     // Default fallback if order properties differ
     const desc = descText ? `\nDescription: ${descText}` : ''
     const firstImage = images && images.length > 0 ? `\nImage: ${images[0]}` : ''
+    const sizeText = size ? `\nSize: ${size}` : ''
     const whatsappMessage = encodeURIComponent(
-      `Product: ${product.name}\nSize: ${size}\nQty: ${numQty}\nName: ${customerName}\nPhone: ${phone}${firstImage}${desc}\nShipping: 4-7 days\nOrder confirmation: Same day`,
+      `Product: ${product.name}${sizeText}\nQty: ${numQty}\nName: ${customerName}\nPhone: ${phone}${firstImage}${desc}\nShipping: 4-7 days\nOrder confirmation: Same day`,
     )
     window.open(`https://wa.me/+919626291742?text=${whatsappMessage}`, '_blank')
   }
@@ -292,6 +281,7 @@ export const ProductCard = ({
           <h4 className="font-heading text-xl text-white mb-2">Order Details</h4>
           
           <div className="grid grid-cols-2 gap-4">
+            {availableSizes.length > 0 && (
             <div className="space-y-1.5 flex flex-col">
               <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Size <span className="text-elnova-peach">*</span></label>
               <select
@@ -308,6 +298,7 @@ export const ProductCard = ({
                 ))}
               </select>
             </div>
+          )}
             
             <div className="space-y-1.5 flex flex-col">
                <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Quantity <span className="text-elnova-peach">*</span></label>
