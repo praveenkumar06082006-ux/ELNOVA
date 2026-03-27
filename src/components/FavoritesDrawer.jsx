@@ -58,14 +58,11 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect }) => {
           <div className="mt-auto pt-4 border-t border-gray-100">
             <button
               onClick={() => {
-                let text = "I would like to order the following items from my favorites:\n\n"
+                let text = ""
                 favorites.forEach((product, i) => {
-                  const firstImage = product.images?.[0] ? `\nImage: ${product.images[0]}` : ''
-                  const descText = product["short description"] || product.description || ''
-                  const desc = descText ? `\nDescription: ${descText}` : ''
-                  text += `${i + 1}. Product: ${product.name}\nPrice: ₹${product.price}${firstImage}${desc}\n\n`
+                  text += `${i + 1}. ${product.name}, [Select Size], [Select Quantity]\n`
                 })
-                text += "Please let me know the required details (Name, Size, Quantity) to proceed."
+                text += `\nCUSTOMER NAME : [Your Name]\nPHONE NO : [Your Phone Number]`
                 window.open(`https://wa.me/+919626291742?text=${encodeURIComponent(text)}`, '_blank')
               }}
               className="w-full rounded-xl bg-elnova-yellow py-3.5 text-center text-sm font-bold uppercase tracking-wide text-black shadow-md transition-transform hover:scale-[1.02] active:scale-95"
