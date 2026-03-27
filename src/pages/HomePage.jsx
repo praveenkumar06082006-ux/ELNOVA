@@ -43,6 +43,11 @@ export const HomePage = () => {
   const { categories: remoteCategories } = useCategories()
   const { getBestSellingProducts } = useAnalytics()
 
+  const handleCategoryClick = (path) => {
+    sessionStorage.setItem('navigated', 'true')
+    navigate(path)
+  }
+
   const [activeBanner, setActiveBanner] = useState(0)
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
@@ -176,7 +181,7 @@ export const HomePage = () => {
                 {/* Circular Image */}
                 <button
                   type="button"
-                  onClick={() => navigate(item.path)}
+                  onClick={() => handleCategoryClick(item.path)}
                   className="relative w-48 h-48 rounded-full overflow-hidden bg-[#3a1d60] shadow-md ring-1 ring-white/10 transition-transform active:scale-95"
                 >
                   {image && (
