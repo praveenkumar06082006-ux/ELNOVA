@@ -1,25 +1,20 @@
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { AppLayout } from './components/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { CategoryPage } from './pages/CategoryPage'
 
 function App() {
   const location = useLocation()
-  const [shouldRedirect, setShouldRedirect] = useState(false)
 
-  // Check for direct access to category pages (not through navigation)
+  // Check for direct access to category pages and redirect to home
   useEffect(() => {
     const categoryPaths = ['/offers', '/embroidery', '/sublimation']
     if (categoryPaths.includes(location.pathname)) {
-      // Always redirect category pages to home
-      setShouldRedirect(true)
+      // Force redirect to home page
+      window.location.href = '/'
     }
   }, [location.pathname])
-
-  if (shouldRedirect) {
-    return <Navigate to="/" replace />
-  }
 
   return (
     <Routes>
