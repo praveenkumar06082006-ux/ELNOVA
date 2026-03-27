@@ -16,6 +16,21 @@ export const CategoryPage = ({ category }) => {
     useOutletContext()
   const { getBestSellingProducts } = useAnalytics()
 
+  // Validate category parameter
+  const validCategories = ['offers', 'embroidery', 'sublimation']
+  if (!validCategories.includes(category)) {
+    console.warn('Invalid category:', category)
+    // Redirect to home or show error
+    return (
+      <section className="flex w-full flex-col px-4 pb-8 min-h-[70vh]">
+        <div className="flex flex-col items-center justify-center p-8 text-center text-white/60 bg-[#3a1d60] rounded-3xl ring-1 ring-white/10 shadow-lg mt-4">
+          <p className="text-lg font-semibold">Category not found</p>
+          <p className="text-sm mt-2">Please navigate to a valid category</p>
+        </div>
+      </section>
+    )
+  }
+
   const [currentPage, setCurrentPage] = useState(0)
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)

@@ -17,6 +17,7 @@ function App() {
           path="/sublimation"
           element={<CategoryPage category="sublimation" />}
         />
+        <Route path="*" element={<HomePage />} />
       </Route>
     </Routes>
   )
