@@ -60,9 +60,8 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect }) => {
               onClick={() => {
                 let text = ""
                 favorites.forEach((product, i) => {
-                  text += `${i + 1}. ${product.name}, [Select Size], [Select Quantity]\n`
+                  text += `${i + 1}. ${product.name}\n`
                 })
-                text += `\nCUSTOMER NAME : [Your Name]\nPHONE NO : [Your Phone Number]`
                 window.open(`https://wa.me/+919626291742?text=${encodeURIComponent(text)}`, '_blank')
               }}
               className="w-full rounded-xl bg-elnova-yellow py-3.5 text-center text-sm font-bold uppercase tracking-wide text-black shadow-md transition-transform hover:scale-[1.02] active:scale-95"

@@ -325,7 +325,7 @@ export const ProductCard = ({
                  value={qtyRaw === '' ? '' : qtyRaw}
                  placeholder="nil"
                  onChange={handleQtyChange}
-                 className="w-full flex-1 rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow placeholder:text-white/30"
+                 className="w-full rounded-xl border border-white/20 bg-white/5 px-2 py-2 sm:px-3 sm:py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow placeholder:text-white/30"
                  required
                />
             </div>

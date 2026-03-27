@@ -168,16 +168,16 @@ export const HomePage = () => {
         <h2 className="mb-4 px-1 font-heading text-2xl text-white">
           Categories :
         </h2>
-        <div className="flex flex-wrap gap-3 overflow-x-auto pb-2">
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-none snap-x">
           {staticCategories.map((item) => {
             const image = getCategoryImage(item.name)
             return (
-              <div key={item.name} className="flex flex-col items-center gap-2 min-w-[120px] snap-center">
+              <div key={item.name} className="flex flex-col items-center gap-2 min-w-[100px] snap-center flex-shrink-0">
                 {/* Circular Image */}
                 <button
                   type="button"
                   onClick={() => navigate(item.path)}
-                  className="relative w-20 h-20 rounded-full overflow-hidden bg-[#3a1d60] shadow-md ring-1 ring-white/10 transition-transform active:scale-95"
+                  className="relative w-24 h-24 rounded-full overflow-hidden bg-[#3a1d60] shadow-md ring-1 ring-white/10 transition-transform active:scale-95"
                 >
                   {image && (
                     <img
@@ -188,7 +188,7 @@ export const HomePage = () => {
                   )}
                 </button>
                 {/* Category Name */}
-                <p className="font-heading text-sm text-white text-center">
+                <p className="font-heading text-xs text-white text-center whitespace-nowrap">
                   {item.name}
                 </p>
               </div>
