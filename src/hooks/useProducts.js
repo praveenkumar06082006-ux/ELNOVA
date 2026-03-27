@@ -9,7 +9,7 @@ const toProductShape = (item, fallbackId) => {
   }
   
   // Check for required fields
-  if (!item.name || !item.price) {
+  if (!item.name || item.price === undefined || item.price === null) {
     console.warn('Missing required fields for item:', item, 'fallbackId:', fallbackId)
   }
   
@@ -30,10 +30,21 @@ const toProductShape = (item, fallbackId) => {
     console.warn('No valid images found for item:', item.name, 'fallbackId:', fallbackId)
   }
 
+  // Better price parsing
+  let productPrice = 0
+  if (typeof item.price === 'number') {
+    productPrice = item.price
+  } else if (typeof item.price === 'string') {
+    const parsedPrice = parseFloat(item.price.replace(/[^\d.-]/g, ''))
+    productPrice = isNaN(parsedPrice) ? 0 : parsedPrice
+  } else {
+    console.warn('Invalid price format for item:', item.name, 'price:', item.price, 'fallbackId:', fallbackId)
+  }
+
   return {
     id: item.id ?? fallbackId,
     name: String(item.name ?? '').trim(),
-    price: Number(item.price ?? 0),
+    price: productPrice,
     category,
     images: productImages,
     shortDescription: String(item['short description'] ?? item.shortDescription ?? item.short_description ?? item.description ?? '').trim(),

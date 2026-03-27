@@ -32,9 +32,11 @@ export const CategoryPage = ({ category }) => {
   const filteredProducts = useMemo(() => {
     let result = products.filter((item) => {
       if (Array.isArray(item.category)) {
-        return item.category.includes(category.toLowerCase())
+        return item.category.some(cat => 
+          String(cat ?? '').trim().toLowerCase() === category.toLowerCase()
+        )
       }
-      return String(item.category ?? '').toLowerCase() === category.toLowerCase()
+      return String(item.category ?? '').trim().toLowerCase() === category.toLowerCase()
     })
 
     // Apply price filter
@@ -150,7 +152,7 @@ export const CategoryPage = ({ category }) => {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-4">
+        <div className="grid grid-cols-2 gap-3 pb-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <ProductCardSkeleton key={`category-skeleton-${index}`} layout="grid" />
           ))}
@@ -166,7 +168,7 @@ export const CategoryPage = ({ category }) => {
       ) : (
         <div className="flex flex-col gap-6">
           <div 
-             className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2 transition-opacity duration-300"
+             className="grid grid-cols-2 gap-3 pb-2 transition-opacity duration-300"
              onTouchStart={handleTouchStart}
              onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}
