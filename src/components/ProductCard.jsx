@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight, Heart, X } from 'lucide-react'
 
-const sizes = ['S', 'M', 'L', 'XL']
+const sizes = ['S', 'M', 'L', 'XL', 'XXL']
 
 export const ProductCard = ({
   product,
@@ -17,7 +17,7 @@ export const ProductCard = ({
 
   const descText = product.shortDescription || product["short description"] || product.shortDescription || product.short_description || product.description || ''
 
-  // Get sizes from Firebase product data - no defaults, only what's in Firebase
+  // Get sizes from Firebase product data
   const availableSizes = useMemo(() => {
     // Read from 'size' field in Firebase
     if (product.size && Array.isArray(product.size)) {
@@ -113,12 +113,10 @@ export const ProductCard = ({
     }
     setErrorMsg('')
     
-    // Default fallback if order properties differ
-    const desc = descText ? `\nDescription: ${descText}` : ''
-    const firstImage = images && images.length > 0 ? `\nImage: ${images[0]}` : ''
-    const sizeText = size ? `\nSize: ${size}` : ''
+    // Only required fields for WhatsApp message
+    const sizeText = size ? `SIZE : ${size}` : ''
     const whatsappMessage = encodeURIComponent(
-      `Product: ${product.name}${sizeText}\nQty: ${numQty}\nName: ${customerName}\nPhone: ${phone}${firstImage}${desc}\nShipping: 4-7 days\nOrder confirmation: Same day`,
+      `NAME : ${product.name}\n${sizeText}\nQUANTITY : ${numQty}\nCUSTOMER NAME : ${customerName}\nPHONE NO : ${phone}`,
     )
     window.open(`https://wa.me/+919626291742?text=${whatsappMessage}`, '_blank')
   }
@@ -284,19 +282,33 @@ export const ProductCard = ({
             {availableSizes.length > 0 && (
             <div className="space-y-1.5 flex flex-col">
               <label className="text-xs font-semibold uppercase tracking-wider text-white/70">Size <span className="text-elnova-peach">*</span></label>
-              <select
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-                className="w-full flex-1 rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm text-white outline-none focus:border-elnova-yellow focus:ring-1 focus:ring-elnova-yellow"
-                required
-              >
-                <option value="" disabled>Select Size</option>
-                {availableSizes.map((label) => (
-                  <option key={label} value={label} className="text-black">
-                    {label}
-                  </option>
-                ))}
-              </select>
+              <div className="flex flex-wrap gap-2">
+                {sizes.map((sizeOption) => {
+                  const isAvailable = availableSizes.includes(sizeOption)
+                  return (
+                    <button
+                      key={sizeOption}
+                      type="button"
+                      onClick={() => isAvailable && setSize(sizeOption)}
+                      disabled={!isAvailable}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        isAvailable
+                          ? size === sizeOption
+                            ? 'bg-elnova-yellow text-black'
+                            : 'bg-white/10 text-white hover:bg-white/20'
+                          : 'bg-white/5 text-white/30 cursor-not-allowed relative'
+                      }`}
+                    >
+                      {sizeOption}
+                      {!isAvailable && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-full h-0.5 bg-white/50 rotate-45"></div>
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           )}
             
