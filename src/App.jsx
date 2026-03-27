@@ -11,17 +11,11 @@ function App() {
   // Check for direct access to category pages (not through navigation)
   useEffect(() => {
     const categoryPaths = ['/offers', '/embroidery', '/sublimation']
-    if (categoryPaths.includes(location.pathname) && !sessionStorage.getItem('navigated')) {
+    if (categoryPaths.includes(location.pathname)) {
+      // Always redirect category pages to home
       setShouldRedirect(true)
-    } else if (location.pathname === '/') {
-      sessionStorage.removeItem('navigated')
     }
   }, [location.pathname])
-
-  const handleNavigation = (path) => {
-    sessionStorage.setItem('navigated', 'true')
-    window.location.href = path
-  }
 
   if (shouldRedirect) {
     return <Navigate to="/" replace />
