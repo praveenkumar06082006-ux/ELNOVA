@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { CategoryPage } from './pages/CategoryPage'
-import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
           element={<CategoryPage category="sublimation" />}
         />
       </Route>
-      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }
