@@ -60,7 +60,8 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect }) => {
               onClick={() => {
                 let text = ""
                 favorites.forEach((product, i) => {
-                  text += `${i + 1}. ${product.name}\n`
+                  const totalPrice = product.price // Default quantity of 1 for favorites
+                  text += `${i + 1}. ${product.name} - PRICE : ${totalPrice}\n`
                 })
                 window.open(`https://wa.me/+919626291742?text=${encodeURIComponent(text)}`, '_blank')
               }}

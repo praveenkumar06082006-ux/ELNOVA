@@ -119,10 +119,13 @@ export const ProductCard = ({
       trackWhatsAppClick(product.id)
     }
     
+    // Calculate total price
+    const totalPrice = numQty * product.price
+    
     // Only required fields for WhatsApp message
     const sizeText = size ? `SIZE : ${size}` : ''
     const whatsappMessage = encodeURIComponent(
-      `NAME : ${product.name}\n${sizeText}\nQUANTITY : ${numQty}\nCUSTOMER NAME : ${customerName}\nPHONE NO : ${phone}`,
+      `NAME : ${product.name}\n${sizeText}\nQUANTITY : ${numQty}\nPRICE : ${totalPrice}\nCUSTOMER NAME : ${customerName}\nPHONE NO : ${phone}`,
     )
     window.open(`https://wa.me/+919626291742?text=${whatsappMessage}`, '_blank')
   }
