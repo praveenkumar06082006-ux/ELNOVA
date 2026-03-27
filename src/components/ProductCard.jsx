@@ -10,6 +10,7 @@ export const ProductCard = ({
   layout = 'list', // 'list', 'scroll', 'grid'
   initiallyExpanded = false,
   onClose,
+  trackWhatsAppClick,
 }) => {
   const categoryLabel = Array.isArray(product.category)
     ? product.category.join(', ')
@@ -112,6 +113,11 @@ export const ProductCard = ({
       return
     }
     setErrorMsg('')
+    
+    // Track WhatsApp click for analytics
+    if (trackWhatsAppClick) {
+      trackWhatsAppClick(product.id)
+    }
     
     // Only required fields for WhatsApp message
     const sizeText = size ? `SIZE : ${size}` : ''

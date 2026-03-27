@@ -7,6 +7,7 @@ export const ProductScrollSection = ({
   favoriteIds,
   toggleFavorite,
   loading = false,
+  trackWhatsAppClick,
 }) => {
   return (
     <section className="w-full px-3 py-2">
@@ -25,6 +26,7 @@ export const ProductScrollSection = ({
                 isFavorite={favoriteIds.includes(product.id)}
                 onToggleFavorite={toggleFavorite}
                 layout="scroll"
+                trackWhatsAppClick={trackWhatsAppClick}
               />
             ))}
       </div>

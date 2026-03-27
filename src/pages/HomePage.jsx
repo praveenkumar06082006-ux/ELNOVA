@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { ProductScrollSection } from '../components/ProductScrollSection'
 import { useCategories } from '../hooks/useCategories'
+import { useAnalytics } from '../hooks/useAnalytics'
 
 const staticCategories = [
   { name: 'Offers', path: '/offers', text: 'text-white' },
@@ -37,9 +38,10 @@ const Divider = () => (
 
 export const HomePage = () => {
   const navigate = useNavigate()
-  const { products, loading, error, favoriteIds, toggleFavorite } =
+  const { products, loading, error, favoriteIds, toggleFavorite, trackWhatsAppClick } =
     useOutletContext()
   const { categories: remoteCategories } = useCategories()
+  const { getBestSellingProducts } = useAnalytics()
 
   const [activeBanner, setActiveBanner] = useState(0)
   const [touchStart, setTouchStart] = useState(null)
@@ -77,7 +79,7 @@ export const HomePage = () => {
     }
   }
 
-  const bestSellingProducts = useMemo(() => products.slice(0, 4), [products])
+  const bestSellingProducts = useMemo(() => getBestSellingProducts(products, 6), [products, getBestSellingProducts])
 
   const getCategoryImage = (name) => {
     const lowerName = name.toLowerCase()
@@ -197,6 +199,7 @@ export const HomePage = () => {
         favoriteIds={favoriteIds}
         toggleFavorite={toggleFavorite}
         loading={loading}
+        trackWhatsAppClick={trackWhatsAppClick}
       />
 
       {!loading && error && (

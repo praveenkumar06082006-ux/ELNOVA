@@ -5,9 +5,11 @@ import { Footer } from './Footer'
 import { FavoritesDrawer } from './FavoritesDrawer'
 import { ProductCard } from './ProductCard'
 import { useProducts } from '../hooks/useProducts'
+import { useAnalytics } from '../hooks/useAnalytics'
 
 export const AppLayout = () => {
   const { products, loading, error } = useProducts()
+  const { trackWhatsAppClick } = useAnalytics()
   const [favoriteIds, setFavoriteIds] = useState([])
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [selectedFavoriteProduct, setSelectedFavoriteProduct] = useState(null)
@@ -37,6 +39,7 @@ export const AppLayout = () => {
             error,
             favoriteIds,
             toggleFavorite,
+            trackWhatsAppClick,
           }}
         />
       </main>
@@ -58,6 +61,7 @@ export const AppLayout = () => {
             onToggleFavorite={toggleFavorite}
             initiallyExpanded={true}
             onClose={() => setSelectedFavoriteProduct(null)}
+            trackWhatsAppClick={trackWhatsAppClick}
           />
         </div>
       )}
