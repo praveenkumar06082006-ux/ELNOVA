@@ -172,12 +172,12 @@ export const HomePage = () => {
           {staticCategories.map((item) => {
             const image = getCategoryImage(item.name)
             return (
-              <div key={item.name} className="flex flex-col items-center gap-2 min-w-[100px] snap-center flex-shrink-0">
+              <div key={item.name} className="flex flex-col items-center gap-3 min-w-[120px] snap-center flex-shrink-0">
                 {/* Circular Image */}
                 <button
                   type="button"
                   onClick={() => navigate(item.path)}
-                  className="relative w-24 h-24 rounded-full overflow-hidden bg-[#3a1d60] shadow-md ring-1 ring-white/10 transition-transform active:scale-95"
+                  className="relative w-32 h-32 rounded-full overflow-hidden bg-[#3a1d60] shadow-md ring-1 ring-white/10 transition-transform active:scale-95"
                 >
                   {image && (
                     <img
@@ -188,7 +188,7 @@ export const HomePage = () => {
                   )}
                 </button>
                 {/* Category Name */}
-                <p className="font-heading text-xs text-white text-center whitespace-nowrap">
+                <p className="font-heading text-base text-white text-center whitespace-nowrap">
                   {item.name}
                 </p>
               </div>
