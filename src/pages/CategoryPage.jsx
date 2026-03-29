@@ -119,23 +119,13 @@ export const CategoryPage = ({ category }) => {
 
   return (
     <section className="flex w-full flex-col px-4 pb-8 min-h-[70vh]">
-      {/* Total Products Count */}
-      <div className="bg-black/20 rounded-xl p-4 mb-6 text-center">
-        <h2 className="font-heading text-2xl text-elnova-yellow mb-2">
-          {filteredProducts.length} Products
-        </h2>
-        <p className="text-sm text-white/80">
-          Found in {categoryTitles[category]}
-        </p>
-      </div>
-
-      {/* Category Header with Circular Images */}
+      {/* Category Header with Product Count */}
       <div className="flex items-center justify-between mb-6 mt-4">
         <h1 className="font-heading text-3xl text-white">
           {categoryTitles[category]}
         </h1>
-        <div className="text-sm font-medium text-white/80">
-          {filteredProducts.length > 0 && `${filteredProducts.length} Products Available`}
+        <div className="text-sm font-medium text-white/80 bg-black/20 rounded-full px-3 py-1">
+          {filteredProducts.length} Products Available
         </div>
         {totalPages > 1 && (
           <div className="flex items-center gap-1.5 text-white/50 bg-black/20 rounded-full px-3 py-1">
