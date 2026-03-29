@@ -174,8 +174,8 @@ export const ProductCard = ({
             alt={product.name}
             className={`w-full object-cover ${imgHeight} cursor-pointer hover:scale-105 transition-transform duration-300`}
             onClick={(e) => {
-              e.stopPropagation()
-              handleImageExpand(0)
+              // Don't expand image, let the card expansion handle this
+              // This will trigger the parent card click to expand the product
             }}
           />
           <button
