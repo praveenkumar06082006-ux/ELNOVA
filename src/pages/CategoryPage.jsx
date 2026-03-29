@@ -119,11 +119,24 @@ export const CategoryPage = ({ category }) => {
 
   return (
     <section className="flex w-full flex-col px-4 pb-8 min-h-[70vh]">
+      {/* Total Products Count */}
+      <div className="bg-black/20 rounded-xl p-4 mb-6 text-center">
+        <h2 className="font-heading text-2xl text-elnova-yellow mb-2">
+          {filteredProducts.length} Products
+        </h2>
+        <p className="text-sm text-white/80">
+          Found in {categoryTitles[category]}
+        </p>
+      </div>
+
       {/* Category Header with Circular Images */}
       <div className="flex items-center justify-between mb-6 mt-4">
         <h1 className="font-heading text-3xl text-white">
           {categoryTitles[category]}
         </h1>
+        <div className="text-sm font-medium text-white/80">
+          {filteredProducts.length > 0 && `${filteredProducts.length} Products Available`}
+        </div>
         {totalPages > 1 && (
           <div className="flex items-center gap-1.5 text-white/50 bg-black/20 rounded-full px-3 py-1">
             <span className="text-sm font-semibold text-elnova-yellow">{currentPage + 1}</span>
@@ -184,9 +197,6 @@ export const CategoryPage = ({ category }) => {
         <div className="flex flex-col gap-6">
           <div 
              className="grid grid-cols-2 gap-3 pb-2 transition-opacity duration-300"
-             onTouchStart={handleTouchStart}
-             onTouchMove={handleTouchMove}
-             onTouchEnd={handleTouchEnd}
           >
             {paginatedProducts.map((product) => (
               <ProductCard
