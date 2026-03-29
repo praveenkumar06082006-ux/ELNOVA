@@ -52,6 +52,7 @@ export const AppLayout = () => {
           setSelectedFavoriteProduct(product)
           setIsFavoritesOpen(false) // optionally close drawer when opening product
         }}
+        onToggleFavorite={toggleFavorite}
       />
       {selectedFavoriteProduct && (
         <div className="fixed inset-0 z-[60]">

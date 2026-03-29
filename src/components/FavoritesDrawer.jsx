@@ -1,6 +1,6 @@
-import { X } from 'lucide-react'
+import { X, Heart, Trash2 } from 'lucide-react'
 
-export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect }) => {
+export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect, onToggleFavorite }) => {
   return (
     <div
       className={`fixed inset-0 z-50 transition ${
@@ -32,23 +32,28 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect }) => {
             </p>
           ) : (
             favorites.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => onSelect(item)}
-                className="flex items-center gap-3 rounded-2xl border border-gray-100 p-2 cursor-pointer hover:bg-gray-50 transition"
-              >
+              <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
                 <img
-                  src={item.images?.[0]}
+                  src={item.images?.[0] || 'https://placehold.co/80x80/3a1d60/ffffff?text=No+Image'}
                   alt={item.name}
-                  className="h-14 w-14 rounded-xl object-cover"
+                  className="w-16 h-16 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => {
+                    // Open full image in new tab
+                    window.open(item.images?.[0] || 'https://placehold.co/800x800/3a1d60/ffffff?text=No+Image', '_blank')
+                  }}
                 />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-elnova-purple">
-                    {item.name}
-                  </p>
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
                   <p className="text-xs text-gray-500">{item.category}</p>
                   <p className="text-sm font-medium">₹{item.price}</p>
                 </div>
+                <button
+                  onClick={() => onToggleFavorite(item.id)}
+                  className="rounded-full p-2 text-red-500 hover:bg-red-50 transition-colors"
+                  aria-label="Remove from favorites"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             ))
           )}
