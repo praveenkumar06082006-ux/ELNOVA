@@ -160,7 +160,12 @@ export const ProductCard = ({
           <img
             src={images[0]}
             alt={product.name}
-            className={`w-full object-cover ${imgHeight}`}
+            className={`w-full object-cover ${imgHeight} cursor-pointer hover:scale-105 transition-transform duration-300`}
+            onClick={(e) => {
+              e.stopPropagation()
+              // Open full image in new tab
+              window.open(images[0], '_blank')
+            }}
           />
           <button
             type="button"
@@ -207,7 +212,11 @@ export const ProductCard = ({
           <img
              src={images[activeIndex]}
              alt={product.name}
-             className="w-full h-[320px] object-cover"
+             className="w-full h-[320px] object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+             onClick={() => {
+               // Open full image in new tab
+               window.open(images[activeIndex], '_blank')
+             }}
           />
           {images.length > 1 && (
             <>

@@ -32,27 +32,30 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect, onToggle
             </p>
           ) : (
             favorites.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                <img
-                  src={item.images?.[0] || 'https://placehold.co/80x80/3a1d60/ffffff?text=No+Image'}
-                  alt={item.name}
-                  className="w-16 h-16 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
-                  onClick={() => {
-                    // Open full image in new tab
-                    window.open(item.images?.[0] || 'https://placehold.co/800x800/3a1d60/ffffff?text=No+Image', '_blank')
-                  }}
-                />
-                <div className="flex-1">
-                  <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
-                  <p className="text-xs text-gray-500">{item.category}</p>
-                  <p className="text-sm font-medium">₹{item.price}</p>
+              <div key={item.id} className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
+                <div className="relative flex-shrink-0">
+                  <img
+                    src={item.images?.[0] || 'https://placehold.co/80x80/3a1d60/ffffff?text=No+Image'}
+                    alt={item.name}
+                    className="w-20 h-20 rounded-xl object-cover cursor-pointer hover:scale-105 transition-transform duration-200 shadow-sm"
+                    onClick={() => {
+                      // Open full image in new tab
+                      window.open(item.images?.[0] || 'https://placehold.co/800x800/3a1d60/ffffff?text=No+Image', '_blank')
+                    }}
+                  />
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold text-gray-900 truncate mb-1">{item.name}</h4>
+                  <p className="text-xs text-gray-500 mb-2 capitalize">{Array.isArray(item.category) ? item.category[0] : item.category}</p>
+                  <p className="text-lg font-bold text-elnova-purple">₹{item.price}</p>
                 </div>
                 <button
                   onClick={() => onToggleFavorite(item.id)}
-                  className="rounded-full p-2 text-red-500 hover:bg-red-50 transition-colors"
+                  className="flex-shrink-0 rounded-full p-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
                   aria-label="Remove from favorites"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={18} />
                 </button>
               </div>
             ))
