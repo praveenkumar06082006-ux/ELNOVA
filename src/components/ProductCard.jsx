@@ -203,10 +203,6 @@ export const ProductCard = ({
       <div className="px-4 pb-8 pt-4 space-y-6">
         <div
           className="relative w-full overflow-hidden rounded-[24px] bg-black/20 ring-1 ring-white/10 shadow-xl"
-          onMouseEnter={startAutoSlide}
-          onMouseLeave={stopAutoSlide}
-          onTouchStart={startAutoSlide}
-          onTouchEnd={stopAutoSlide}
         >
           <img
              src={images[activeIndex]}
