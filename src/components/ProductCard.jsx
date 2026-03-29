@@ -53,9 +53,11 @@ export const ProductCard = ({
     },
     [product.images, product.image],
   )
-  const [isExpanded, setIsExpanded] = useState(initiallyExpanded)
+  const [isExpanded, setIsExpanded] = useState(initiallyExpanded || false)
   const [showFullDesc, setShowFullDesc] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [isImageExpanded, setIsImageExpanded] = useState(false)
+  const [expandedImageIndex, setExpandedImageIndex] = useState(0)
   const [autoSlideRef, setAutoSlideRef] = useState(null)
   
   const [qtyRaw, setQtyRaw] = useState('1')
@@ -65,7 +67,17 @@ export const ProductCard = ({
 
   const handleClose = () => {
     setIsExpanded(false)
+    setIsImageExpanded(false)
     if (onClose) onClose()
+  }
+
+  const handleImageExpand = (index = 0) => {
+    setExpandedImageIndex(index)
+    setIsImageExpanded(true)
+  }
+
+  const handleImageClose = () => {
+    setIsImageExpanded(false)
   }
 
   const stopAutoSlide = () => {
@@ -163,8 +175,7 @@ export const ProductCard = ({
             className={`w-full object-cover ${imgHeight} cursor-pointer hover:scale-105 transition-transform duration-300`}
             onClick={(e) => {
               e.stopPropagation()
-              // Open full image in new tab
-              window.open(images[0], '_blank')
+              handleImageExpand(0)
             }}
           />
           <button
@@ -214,8 +225,7 @@ export const ProductCard = ({
              alt={product.name}
              className="w-full h-[320px] object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
              onClick={() => {
-               // Open full image in new tab
-               window.open(images[activeIndex], '_blank')
+               handleImageExpand(activeIndex)
              }}
           />
           {images.length > 1 && (
@@ -377,6 +387,67 @@ export const ProductCard = ({
           </button>
         </form>
       </div>
+
+      {/* Image Expansion Modal */}
+      {isImageExpanded && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/90 p-4">
+          <div className="relative max-w-4xl max-h-[90vh] w-full">
+            <button
+              onClick={handleImageClose}
+              className="absolute -top-12 right-0 rounded-full bg-white/10 p-3 text-white hover:bg-white/20 transition-colors"
+              aria-label="Close image"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="relative">
+              <img
+                src={images[expandedImageIndex]}
+                alt={`${product.name} - Image ${expandedImageIndex + 1}`}
+                className="w-full h-full object-contain rounded-xl"
+              />
+              
+              {/* Image navigation */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setExpandedImageIndex((prev) => (prev - 1 + images.length) % images.length)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white backdrop-blur-sm hover:bg-black/70 transition-colors"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    onClick={() => setExpandedImageIndex((prev) => (prev + 1) % images.length)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white backdrop-blur-sm hover:bg-black/70 transition-colors"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+              
+              {/* Image indicators */}
+              {images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setExpandedImageIndex(i)}
+                      className={`h-2 w-2 rounded-full transition-all ${
+                        i === expandedImageIndex
+                          ? 'w-8 bg-elnova-yellow'
+                          : 'bg-white/50 hover:bg-white/70'
+                      }`}
+                      aria-label={`Go to image ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

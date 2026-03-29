@@ -1,6 +1,8 @@
 import { X, Heart, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect, onToggleFavorite }) => {
+  const [expandedImage, setExpandedImage] = useState(null)
   return (
     <div
       className={`fixed inset-0 z-50 transition ${
@@ -38,10 +40,7 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect, onToggle
                     src={item.images?.[0] || 'https://placehold.co/80x80/3a1d60/ffffff?text=No+Image'}
                     alt={item.name}
                     className="w-20 h-20 rounded-xl object-cover cursor-pointer hover:scale-105 transition-transform duration-200 shadow-sm"
-                    onClick={() => {
-                      // Open full image in new tab
-                      window.open(item.images?.[0] || 'https://placehold.co/800x800/3a1d60/ffffff?text=No+Image', '_blank')
-                    }}
+                    onClick={() => setExpandedImage(item.images?.[0] || 'https://placehold.co/800x800/3a1d60/ffffff?text=No+Image')}
                   />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
                 </div>
@@ -93,6 +92,29 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect, onToggle
           </div>
         )}
       </aside>
+
+      {/* Image Expansion Modal */}
+      {expandedImage && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4">
+          <div className="relative max-w-4xl max-h-[90vh] w-full">
+            <button
+              onClick={() => setExpandedImage(null)}
+              className="absolute -top-12 right-0 rounded-full bg-white/10 p-3 text-white hover:bg-white/20 transition-colors"
+              aria-label="Close image"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="relative">
+              <img
+                src={expandedImage}
+                alt="Expanded product image"
+                className="w-full h-full object-contain rounded-xl"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
