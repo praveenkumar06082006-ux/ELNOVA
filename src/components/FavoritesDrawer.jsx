@@ -55,19 +55,32 @@ export const FavoritesDrawer = ({ isOpen, favorites, onClose, onSelect }) => {
         </div>
 
         {favorites.length > 0 && (
-          <div className="mt-auto pt-4 border-t border-gray-100">
+          <div className="mt-auto pt-4 border-t border-gray-100 space-y-3">
             <button
               onClick={() => {
-                let text = ""
+                let text = "Hello! I would like to order the following products from my favorites:\n\n"
                 favorites.forEach((product, i) => {
                   const totalPrice = product.price // Default quantity of 1 for favorites
-                  text += `${i + 1}. ${product.name} - PRICE : ${totalPrice}\n`
+                  text += `${i + 1}. ${product.name}\n`
+                  text += `   - Price: ₹${totalPrice}\n`
+                  text += `   - I need this product\n\n`
                 })
+                text += "Please let me know the availability and delivery details for these items.\n\nThank you!"
                 window.open(`https://wa.me/+919626291742?text=${encodeURIComponent(text)}`, '_blank')
               }}
               className="w-full rounded-xl bg-elnova-yellow py-3.5 text-center text-sm font-bold uppercase tracking-wide text-black shadow-md transition-transform hover:scale-[1.02] active:scale-95"
             >
               Order All Favorites via WhatsApp
+            </button>
+            <button
+              onClick={() => {
+                if (confirm('Are you sure you want to clear all favorites?')) {
+                  clearFavorites()
+                }
+              }}
+              className="w-full rounded-xl border border-white/20 bg-white/10 py-3.5 text-center text-sm font-semibold uppercase tracking-wide text-white shadow-md transition-transform hover:bg-white/20 active:scale-95"
+            >
+              Clear All Favorites
             </button>
           </div>
         )}
