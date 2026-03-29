@@ -124,15 +124,17 @@ export const CategoryPage = ({ category }) => {
         <h1 className="font-heading text-3xl text-white">
           {categoryTitles[category]}
         </h1>
-        <div className="text-sm font-medium text-white/80 bg-black/20 rounded-full px-3 py-1">
-          {filteredProducts.length} Products Available
-        </div>
-        {totalPages > 1 && (
-          <div className="flex items-center gap-1.5 text-white/50 bg-black/20 rounded-full px-3 py-1">
-            <span className="text-sm font-semibold text-elnova-yellow">{currentPage + 1}</span>
-            <span className="text-xs">/ {totalPages}</span>
+        <div className="flex items-center">
+          <div className="text-sm font-medium text-white/80 bg-black/20 rounded-full px-3 py-1">
+            {filteredProducts.length} Products Available
           </div>
-        )}
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1.5 text-white/50 bg-black/20 rounded-full px-3 py-1 ml-2">
+               <span className="text-sm font-semibold text-elnova-yellow">{currentPage + 1}</span>
+               <span className="text-xs">/ {totalPages}</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filter Options */}
