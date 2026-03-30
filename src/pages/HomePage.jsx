@@ -8,6 +8,7 @@ const staticCategories = [
   { name: 'Offers', path: '/offers', text: 'text-white' },
   { name: 'Embroidery', path: '/embroidery', text: 'text-white' },
   { name: 'Sublimation', path: '/sublimation', text: 'text-white' },
+  { name: 'Cricket', path: '/cricket', text: 'text-white' },
 ]
 
 const banners = [

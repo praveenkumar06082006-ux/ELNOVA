@@ -17,6 +17,10 @@ function App() {
           path="/sublimation"
           element={<CategoryPage category="sublimation" />}
         />
+        <Route
+          path="/cricket"
+          element={<CategoryPage category="cricket" />}
+        />
       </Route>
     </Routes>
   )

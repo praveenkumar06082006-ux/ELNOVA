@@ -9,6 +9,7 @@ const categoryTitles = {
   offers: 'Offers',
   embroidery: 'Embroidery',
   sublimation: 'Sublimation',
+  cricket: 'Cricket',
 }
 
 export const CategoryPage = ({ category }) => {
@@ -17,7 +18,7 @@ export const CategoryPage = ({ category }) => {
   const { getBestSellingProducts } = useAnalytics()
 
   // Validate category parameter
-  const validCategories = ['offers', 'embroidery', 'sublimation']
+  const validCategories = ['offers', 'embroidery', 'sublimation', 'cricket']
   if (!validCategories.includes(category)) {
     console.warn('Invalid category:', category)
     // Redirect to home or show error
