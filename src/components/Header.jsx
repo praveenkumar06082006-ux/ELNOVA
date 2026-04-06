@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Heart, Menu, X, ChevronDown } from 'lucide-react'
+import { Heart, Menu, X, ChevronDown, Search } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 
 const navClass = ({ isActive }) =>
@@ -24,6 +24,13 @@ export const Header = ({ favoritesCount, onOpenFavorites }) => {
           ELNOVA
         </Link>
         <div className="flex items-center gap-2">
+          <Link
+            to="/search"
+            className="rounded-full p-2 text-white hover:bg-white/10 transition-colors"
+            aria-label="Search"
+          >
+            <Search size={18} />
+          </Link>
           <button
             type="button"
             onClick={onOpenFavorites}

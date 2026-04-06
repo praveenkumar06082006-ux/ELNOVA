@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { CategoryPage } from './pages/CategoryPage'
+import { SearchPage } from './pages/SearchPage'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           path="/cricket"
           element={<CategoryPage category="cricket" />}
         />
+        <Route path="/search" element={<SearchPage />} />
       </Route>
     </Routes>
   )
