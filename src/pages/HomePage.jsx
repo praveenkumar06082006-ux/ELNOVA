@@ -45,7 +45,7 @@ export const HomePage = () => {
     useOutletContext()
   const { categories: remoteCategories } = useCategories()
   const { getBestSellingProducts } = useAnalytics()
-  const { reviews } = useReviews()
+  const { reviews, addReview, deleteReview } = useReviews()
 
   const [activeBanner, setActiveBanner] = useState(0)
   const [touchStart, setTouchStart] = useState(null)
@@ -221,7 +221,11 @@ export const HomePage = () => {
       )}
 
       {/* Customer Reviews Section */}
-      <HomePageReviews reviews={reviews} />
+      <HomePageReviews 
+        reviews={reviews} 
+        onAddReview={addReview}
+        onDeleteReview={deleteReview}
+      />
     </div>
   )
 }

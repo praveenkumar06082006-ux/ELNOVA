@@ -1,58 +1,27 @@
 import { useState, useEffect } from 'react'
 
-// Mock reviews data - in production, this would come from Firebase/API
-const mockReviews = [
-  {
-    id: '1',
-    productId: 'product1',
-    userName: 'Rahul Kumar',
-    rating: 5,
-    comment: 'Excellent quality jersey! The material is very comfortable and the printing is perfect. Fits exactly as expected. Will definitely order again!',
-    date: '2024-03-15T10:30:00Z',
-    helpful: 12
-  },
-  {
-    id: '2',
-    productId: 'product1',
-    userName: 'Priya Sharma',
-    rating: 4,
-    comment: 'Great product overall. The design is amazing and the fabric quality is good. Only reason for 4 stars is that it took a bit longer to deliver than expected.',
-    date: '2024-03-10T14:20:00Z',
-    helpful: 8
-  },
-  {
-    id: '3',
-    productId: 'product2',
-    userName: 'Amit Patel',
-    rating: 5,
-    comment: 'Perfect cricket jersey! The colors are vibrant and the stitching is excellent. My team loves these jerseys.',
-    date: '2024-03-08T09:15:00Z',
-    helpful: 15
-  },
-  {
-    id: '4',
-    productId: 'product2',
-    userName: 'Neha Gupta',
-    rating: 3,
-    comment: 'Good quality but sizing runs a bit small. I ordered XL but it fits more like L. The design is nice though.',
-    date: '2024-03-05T16:45:00Z',
-    helpful: 6
-  }
-]
+// Storage key for reviews
+const REVIEWS_STORAGE_KEY = 'elnova_reviews'
 
 export const useReviews = () => {
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // Load reviews from localStorage on mount
   useEffect(() => {
-    // Simulate loading reviews
-    const loadReviews = async () => {
+    const loadReviews = () => {
       try {
         setLoading(true)
-        // In production, fetch from Firebase/API
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setReviews(mockReviews)
+        const storedReviews = localStorage.getItem(REVIEWS_STORAGE_KEY)
+        const parsedReviews = storedReviews ? JSON.parse(storedReviews) : []
+        
+        // Sort by date (newest first)
+        const sortedReviews = parsedReviews.sort((a, b) => 
+          new Date(b.date) - new Date(a.date)
+        )
+        
+        setReviews(sortedReviews)
         setError('')
       } catch (err) {
         setError('Failed to load reviews')
@@ -65,15 +34,48 @@ export const useReviews = () => {
     loadReviews()
   }, [])
 
-  const getProductReviews = (productId) => {
-    return reviews.filter(review => review.productId === productId)
+  // Save reviews to localStorage
+  const saveReviews = (updatedReviews) => {
+    try {
+      localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updatedReviews))
+      setReviews(updatedReviews)
+    } catch (err) {
+      console.error('Error saving reviews:', err)
+      throw err
+    }
   }
 
-  const addReview = async (newReview) => {
+  // Get all reviews for display
+  const getAllReviews = () => {
+    return reviews.sort((a, b) => new Date(b.date) - new Date(a.date))
+  }
+
+  // Add a new review
+  const addReview = async (reviewData) => {
     try {
-      // In production, save to Firebase/API
-      await new Promise(resolve => setTimeout(resolve, 500))
-      setReviews(prev => [newReview, ...prev])
+      // Validate required fields
+      if (!reviewData.userName?.trim()) {
+        throw new Error('Name is required')
+      }
+      if (!reviewData.comment?.trim()) {
+        throw new Error('Review comment is required')
+      }
+      if (!reviewData.rating || reviewData.rating < 1 || reviewData.rating > 5) {
+        throw new Error('Valid rating is required')
+      }
+
+      const newReview = {
+        id: Date.now().toString(),
+        userName: reviewData.userName.trim(),
+        rating: reviewData.rating,
+        comment: reviewData.comment.trim(),
+        date: new Date().toISOString(),
+        productId: reviewData.productId || 'general', // Can be product-specific or general
+        helpful: 0
+      }
+
+      const updatedReviews = [newReview, ...reviews]
+      saveReviews(updatedReviews)
       return newReview
     } catch (err) {
       console.error('Error adding review:', err)
@@ -81,39 +83,47 @@ export const useReviews = () => {
     }
   }
 
-  const updateReview = async (reviewId, updates) => {
-    try {
-      // In production, update in Firebase/API
-      await new Promise(resolve => setTimeout(resolve, 300))
-      setReviews(prev =>
-        prev.map(review =>
-          review.id === reviewId ? { ...review, ...updates } : review
-        )
-      )
-    } catch (err) {
-      console.error('Error updating review:', err)
-      throw err
-    }
-  }
-
+  // Delete a review (user can delete their own)
   const deleteReview = async (reviewId) => {
     try {
-      // In production, delete from Firebase/API
-      await new Promise(resolve => setTimeout(resolve, 300))
-      setReviews(prev => prev.filter(review => review.id !== reviewId))
+      const updatedReviews = reviews.filter(review => review.id !== reviewId)
+      saveReviews(updatedReviews)
     } catch (err) {
       console.error('Error deleting review:', err)
       throw err
     }
   }
 
+  // Get reviews for a specific product (optional)
+  const getProductReviews = (productId) => {
+    return reviews.filter(review => review.productId === productId)
+  }
+
+  // Calculate average rating
+  const getAverageRating = () => {
+    if (reviews.length === 0) return 0
+    const sum = reviews.reduce((acc, review) => acc + review.rating, 0)
+    return (sum / reviews.length).toFixed(1)
+  }
+
+  // Get rating distribution
+  const getRatingDistribution = () => {
+    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+    reviews.forEach(review => {
+      distribution[review.rating]++
+    })
+    return distribution
+  }
+
   return {
     reviews,
     loading,
     error,
-    getProductReviews,
+    getAllReviews,
     addReview,
-    updateReview,
-    deleteReview
+    deleteReview,
+    getProductReviews,
+    getAverageRating,
+    getRatingDistribution
   }
 }

@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { ReviewCard } from './ReviewCard'
-import { Star, ChevronRight, MessageCircle } from 'lucide-react'
+import { ReviewCard, ReviewForm } from './ReviewCard'
+import { Star, ChevronRight, MessageCircle, Plus } from 'lucide-react'
 
-export const HomePageReviews = ({ reviews = [] }) => {
-  const [showMore, setShowMore] = useState(false)
+export const HomePageReviews = ({ reviews = [], onAddReview, onDeleteReview }) => {
+  const [showForm, setShowForm] = useState(false)
   
   // Display only first 3 reviews initially
-  const displayedReviews = showMore ? reviews : reviews.slice(0, 3)
+  const displayedReviews = showForm ? reviews : reviews.slice(0, 3)
   
   const calculateAverageRating = () => {
     if (reviews.length === 0) return 0
@@ -50,30 +50,52 @@ export const HomePageReviews = ({ reviews = [] }) => {
           </div>
           
           <p className="text-white/70 max-w-2xl mx-auto">
-            See what our customers are saying about our premium jerseys and sports apparel
+            Real reviews from real customers. Share your experience with our products!
           </p>
         </div>
+
+        {/* Add Review Button */}
+        {!showForm && (
+          <div className="text-center mb-8">
+            <button
+              onClick={() => setShowForm(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-elnova-yellow px-8 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-elnova-yellow/20 transition-all duration-200 hover:scale-[1.02] active:scale-95"
+            >
+              <Plus size={16} />
+              Write a Review
+            </button>
+          </div>
+        )}
+
+        {/* Review Form */}
+        {showForm && (
+          <div className="mb-8">
+            <ReviewForm onSubmitReview={onAddReview} />
+          </div>
+        )}
 
         {/* Reviews Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {displayedReviews.map((review) => (
             <div key={review.id} className="transform transition-all duration-300 hover:scale-105">
-              <ReviewCard review={review} />
+              <ReviewCard 
+                review={review} 
+                onDelete={onDeleteReview}
+              />
             </div>
           ))}
         </div>
 
         {/* See More Button */}
-        {reviews.length > 3 && (
+        {reviews.length > 3 && !showForm && (
           <div className="text-center">
             <button
-              onClick={() => setShowMore(!showMore)}
+              onClick={() => setShowForm(true)}
               className="inline-flex items-center gap-2 rounded-full bg-elnova-yellow px-8 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-elnova-yellow/20 transition-all duration-200 hover:scale-[1.02] active:scale-95"
             >
-              {showMore ? 'Show Less' : 'See More Reviews'}
+              See All Reviews ({reviews.length - 3} more)
               <ChevronRight 
                 size={16} 
-                className={`transition-transform duration-200 ${showMore ? 'rotate-90' : ''}`} 
               />
             </button>
           </div>
@@ -85,18 +107,8 @@ export const HomePageReviews = ({ reviews = [] }) => {
             <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-elnova-yellow/20 flex items-center justify-center">
               <Star className="text-elnova-yellow" size={24} />
             </div>
-            <h4 className="font-semibold text-white mb-1">4.8/5 Rating</h4>
+            <h4 className="font-semibold text-white mb-1">{averageRating}/5 Rating</h4>
             <p className="text-xs text-white/60">Average Customer Rating</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-elnova-yellow/20 flex items-center justify-center">
-              <svg className="text-elnova-yellow" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-            </div>
-            <h4 className="font-semibold text-white mb-1">Verified</h4>
-            <p className="text-xs text-white/60">Customer Reviews</p>
           </div>
           
           <div className="text-center">

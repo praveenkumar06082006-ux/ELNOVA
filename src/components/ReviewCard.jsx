@@ -1,6 +1,6 @@
-import { Star, User, Calendar } from 'lucide-react'
+import { Star, User, Calendar, Trash2 } from 'lucide-react'
 
-export const ReviewCard = ({ review }) => {
+export const ReviewCard = ({ review, onDelete }) => {
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -47,17 +47,26 @@ export const ReviewCard = ({ review }) => {
         <p>{review.comment}</p>
       </div>
 
-      {/* Helpful votes (optional future feature) */}
-      {review.helpful !== undefined && (
-        <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
-          <span className="text-xs text-white/50">
-            {review.helpful} people found this helpful
-          </span>
-          <button className="text-xs text-elnova-yellow hover:text-elnova-yellow/80 transition-colors">
-            Helpful?
+      {/* Review Actions */}
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+        <span className="text-xs text-white/50">
+          {review.helpful !== undefined && (
+            <>
+              {review.helpful} people found this helpful
+            </>
+          )}
+        </span>
+        {onDelete && (
+          <button
+            onClick={() => onDelete(review.id)}
+            className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
+            aria-label="Delete review"
+          >
+            <Trash2 size={12} />
+            Delete
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
