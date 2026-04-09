@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ReviewCard, ReviewForm } from './ReviewCard'
+import { ReviewCard } from './ReviewCard'
+import { ReviewForm } from './ReviewForm'
 import { Star, ChevronRight, MessageCircle, Plus } from 'lucide-react'
 
 export const HomePageReviews = ({ reviews = [], onAddReview, onDeleteReview }) => {
