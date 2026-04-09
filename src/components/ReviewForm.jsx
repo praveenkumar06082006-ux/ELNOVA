@@ -94,35 +94,40 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
             Photo (Optional)
           </label>
           <div className="flex items-center gap-4">
-            {photoPreview ? (
-              <div className="relative">
-                <img
-                  src={photoPreview}
-                  alt="Review photo preview"
-                  className="w-24 h-24 rounded-xl object-cover border-2 border-white/20"
-                />
-                <button
-                  type="button"
-                  onClick={handleRemovePhoto}
-                  className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1.5 text-white hover:bg-red-600 transition-colors"
-                  aria-label="Remove photo"
+            <div className="flex-1">
+              {photoPreview ? (
+                <div className="relative">
+                  <img
+                    src={photoPreview}
+                    alt="Review photo preview"
+                    className="w-full h-32 rounded-xl object-cover border-2 border-white/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1.5 text-white hover:bg-red-600 transition-colors"
+                    aria-label="Remove photo"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <label
+                  htmlFor="photo-upload"
+                  className="w-full h-32 rounded-xl border-2 border-dashed border-white/30 flex items-center justify-center bg-white/5 cursor-pointer hover:bg-white/10 transition-colors"
                 >
-                  <X size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-white/30 flex items-center justify-center bg-white/5">
-                <Camera className="text-white/40" size={32} />
-              </div>
-            )}
-            
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              className="hidden"
-              id="photo-upload"
-            />
+                  <Camera className="text-white/40" size={32} />
+                  <span className="text-white/60 text-sm mt-2">Click to upload photo</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    id="photo-upload"
+                  />
+                </label>
+              )}
+            </div>
           </div>
         </div>
 
