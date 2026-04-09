@@ -1,8 +1,10 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { ProductScrollSection } from '../components/ProductScrollSection'
+import { HomePageReviews } from '../components/HomePageReviews'
 import { useCategories } from '../hooks/useCategories'
 import { useAnalytics } from '../hooks/useAnalytics'
+import { useReviews } from '../hooks/useReviews'
 
 const staticCategories = [
   { name: 'Offers', path: '/offers', text: 'text-white' },
@@ -43,6 +45,7 @@ export const HomePage = () => {
     useOutletContext()
   const { categories: remoteCategories } = useCategories()
   const { getBestSellingProducts } = useAnalytics()
+  const { reviews } = useReviews()
 
   const [activeBanner, setActiveBanner] = useState(0)
   const [touchStart, setTouchStart] = useState(null)
@@ -216,6 +219,9 @@ export const HomePage = () => {
           </p>
         </div>
       )}
+
+      {/* Customer Reviews Section */}
+      <HomePageReviews reviews={reviews} />
     </div>
   )
 }

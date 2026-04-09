@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight, Heart, X } from 'lucide-react'
-import { ReviewSection } from './ReviewSection'
-import { useReviews } from '../hooks/useReviews'
 
 const sizes = ['S', 'M', 'L', 'XL', 'XXL']
 
@@ -61,9 +59,6 @@ export const ProductCard = ({
   const [isImageExpanded, setIsImageExpanded] = useState(false)
   const [expandedImageIndex, setExpandedImageIndex] = useState(0)
   const [autoSlideRef, setAutoSlideRef] = useState(null)
-  
-  const { getProductReviews, addReview } = useReviews()
-  const productReviews = useMemo(() => getProductReviews(product.id), [product.id, getProductReviews])
   
   const [qtyRaw, setQtyRaw] = useState('1')
   const [customerName, setCustomerName] = useState('')
@@ -391,15 +386,6 @@ export const ProductCard = ({
             Confirm & Order via WhatsApp
           </button>
         </form>
-      </div>
-
-      {/* Reviews Section */}
-      <div className="px-4 pb-8 pt-4">
-        <ReviewSection
-          productId={product.id}
-          reviews={productReviews}
-          onAddReview={addReview}
-        />
       </div>
 
       {/* Image Expansion Modal */}
