@@ -1,12 +1,32 @@
 import { useState } from 'react'
-import { Star, Send } from 'lucide-react'
+import { Star, Send, Camera, X } from 'lucide-react'
 
 export const ReviewForm = ({ productId, onSubmitReview }) => {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [userName, setUserName] = useState('')
   const [comment, setComment] = useState('')
+  const [photo, setPhoto] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = (event) => {
+        const result = event.target.result
+        setPhoto(result)
+        setPhotoPreview(result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemovePhoto = () => {
+    setPhoto(null)
+    setPhotoPreview(null)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,7 +44,8 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
       rating,
       comment: comment.trim(),
       date: new Date().toISOString(),
-      helpful: 0
+      helpful: 0,
+      photo: photo, // Include photo if uploaded
     }
 
     try {
@@ -34,6 +55,8 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
       setHoverRating(0)
       setUserName('')
       setComment('')
+      setPhoto(null)
+      setPhotoPreview(null)
     } catch (error) {
       console.error('Error submitting review:', error)
     } finally {
@@ -65,6 +88,44 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
       <h3 className="font-heading text-xl text-white mb-6">Write a Review</h3>
       
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Photo Upload Section */}
+        <div>
+          <label className="block text-sm font-medium text-white/70 mb-2">
+            Photo (Optional)
+          </label>
+          <div className="flex items-center gap-4">
+            {photoPreview ? (
+              <div className="relative">
+                <img
+                  src={photoPreview}
+                  alt="Review photo preview"
+                  className="w-24 h-24 rounded-xl object-cover border-2 border-white/20"
+                />
+                <button
+                  type="button"
+                  onClick={handleRemovePhoto}
+                  className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1.5 text-white hover:bg-red-600 transition-colors"
+                  aria-label="Remove photo"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-white/30 flex items-center justify-center bg-white/5">
+                <Camera className="text-white/40" size={32} />
+              </div>
+            )}
+            
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="hidden"
+              id="photo-upload"
+            />
+          </div>
+        </div>
+
         {/* Star Rating */}
         <div>
           <label className="block text-sm font-medium text-white/70 mb-3">

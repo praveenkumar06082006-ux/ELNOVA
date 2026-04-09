@@ -71,7 +71,8 @@ export const useReviews = () => {
         comment: reviewData.comment.trim(),
         date: new Date().toISOString(),
         productId: reviewData.productId || 'general', // Can be product-specific or general
-        helpful: 0
+        helpful: 0,
+        photo: reviewData.photo || null // Support for photo attachment
       }
 
       const updatedReviews = [newReview, ...reviews]

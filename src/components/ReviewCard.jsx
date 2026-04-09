@@ -42,6 +42,17 @@ export const ReviewCard = ({ review, onDelete }) => {
         </div>
       </div>
 
+      {/* Review Photo */}
+      {review.photo && (
+        <div className="mb-3">
+          <img
+            src={review.photo}
+            alt="Review photo"
+            className="w-full max-w-xs rounded-xl object-cover border-2 border-white/20"
+          />
+        </div>
+      )}
+
       {/* Review comment */}
       <div className="text-white/80 text-sm leading-relaxed">
         <p>{review.comment}</p>
