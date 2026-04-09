@@ -93,7 +93,7 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
             type="text"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
-            placeholder="Enter your name"
+            placeholder=""
             className="w-full rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none focus:border-elnova-yellow focus:ring-2 focus:ring-elnova-yellow/20 placeholder:text-white/30"
             required
           />
@@ -107,7 +107,7 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience with this product..."
+            placeholder=""
             rows={4}
             className="w-full rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white outline-none focus:border-elnova-yellow focus:ring-2 focus:ring-elnova-yellow/20 placeholder:text-white/30 resize-none"
             required
