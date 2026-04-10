@@ -2,11 +2,14 @@ import { useState } from 'react'
 import { ReviewCard } from './ReviewCard'
 import { ReviewForm } from './ReviewForm'
 import { Star, ChevronRight, MessageCircle, Plus } from 'lucide-react'
+import { useFirebaseReviews } from '../hooks/useFirebaseReviews'
 
-export const HomePageReviews = ({ reviews = [], onAddReview, onDeleteReview }) => {
+export const HomePageReviews = () => {
   const [showForm, setShowForm] = useState(false)
   
-  // Always show all reviews, form is separate
+  const { reviews, loading, error, addReview, deleteReview, getAverageRating } = useFirebaseReviews()
+  
+  // Always show all reviews
   const displayedReviews = reviews
   
   const calculateAverageRating = () => {

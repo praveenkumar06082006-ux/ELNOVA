@@ -6,17 +6,17 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
   const [hoverRating, setHoverRating] = useState(0)
   const [userName, setUserName] = useState('')
   const [comment, setComment] = useState('')
-  const [photo, setPhoto] = useState(null)
+  const [photoFile, setPhotoFile] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0]
     if (file) {
+      setPhotoFile(file)
       const reader = new FileReader()
       reader.onloadend = (event) => {
         const result = event.target.result
-        setPhoto(result)
         setPhotoPreview(result)
       }
       reader.readAsDataURL(file)
@@ -24,7 +24,7 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
   }
 
   const handleRemovePhoto = () => {
-    setPhoto(null)
+    setPhotoFile(null)
     setPhotoPreview(null)
   }
 
@@ -45,7 +45,7 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
       comment: comment.trim(),
       date: new Date().toISOString(),
       helpful: 0,
-      photo: photo, // Include photo if uploaded
+      photoFile: photoFile, // Pass the actual file for Firebase upload
     }
 
     try {
@@ -55,7 +55,7 @@ export const ReviewForm = ({ productId, onSubmitReview }) => {
       setHoverRating(0)
       setUserName('')
       setComment('')
-      setPhoto(null)
+      setPhotoFile(null)
       setPhotoPreview(null)
     } catch (error) {
       console.error('Error submitting review:', error)

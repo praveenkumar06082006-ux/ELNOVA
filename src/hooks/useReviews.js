@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react'
 // Storage key for reviews
 const REVIEWS_STORAGE_KEY = 'elnova_reviews'
 
+// In-memory storage as fallback for cross-device testing
+let inMemoryReviews = []
+
 export const useReviews = () => {
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
@@ -23,7 +26,7 @@ export const useReviews = () => {
               id: 'sample1',
               userName: 'John Doe',
               rating: 5,
-              comment: 'Excellent quality jersey! The material is very comfortable and fits perfectly.',
+              comment: 'Excellent quality jersey! The material is very comfortable and fits perfectly. I will definitely order again!',
               date: new Date().toISOString(),
               productId: 'general',
               helpful: 0,
@@ -33,8 +36,18 @@ export const useReviews = () => {
               id: 'sample2', 
               userName: 'Jane Smith',
               rating: 4,
-              comment: 'Great product overall. Fast delivery and good packaging.',
+              comment: 'Great product overall. Fast delivery and good packaging. The design is exactly as shown in pictures.',
               date: new Date(Date.now() - 86400000).toISOString(),
+              productId: 'general',
+              helpful: 0,
+              photo: null
+            },
+            {
+              id: 'sample3',
+              userName: 'Mike Johnson',
+              rating: 5,
+              comment: 'Amazing cricket jersey! The colors are vibrant and the stitching is top quality. My whole team loves these jerseys.',
+              date: new Date(Date.now() - 172800000).toISOString(),
               productId: 'general',
               helpful: 0,
               photo: null
@@ -42,6 +55,7 @@ export const useReviews = () => {
           ]
           localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(sampleReviews))
           setReviews(sampleReviews)
+          inMemoryReviews = sampleReviews
         } else {
           // Sort by date (newest first)
           const sortedReviews = parsedReviews.sort((a, b) => 
@@ -49,6 +63,7 @@ export const useReviews = () => {
           )
           
           setReviews(sortedReviews)
+          inMemoryReviews = sortedReviews
         }
         
         setError('')
@@ -68,6 +83,7 @@ export const useReviews = () => {
     try {
       localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updatedReviews))
       setReviews(updatedReviews)
+      inMemoryReviews = updatedReviews
     } catch (err) {
       console.error('Error saving reviews:', err)
       throw err
@@ -76,7 +92,7 @@ export const useReviews = () => {
 
   // Get all reviews for display
   const getAllReviews = () => {
-    return reviews.sort((a, b) => new Date(b.date) - new Date(a.date))
+    return inMemoryReviews.sort((a, b) => new Date(b.date) - new Date(a.date))
   }
 
   // Add a new review
