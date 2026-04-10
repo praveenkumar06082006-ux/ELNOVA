@@ -16,12 +16,41 @@ export const useReviews = () => {
         const storedReviews = localStorage.getItem(REVIEWS_STORAGE_KEY)
         const parsedReviews = storedReviews ? JSON.parse(storedReviews) : []
         
-        // Sort by date (newest first)
-        const sortedReviews = parsedReviews.sort((a, b) => 
-          new Date(b.date) - new Date(a.date)
-        )
+        // If no reviews, add sample reviews for testing
+        if (parsedReviews.length === 0) {
+          const sampleReviews = [
+            {
+              id: 'sample1',
+              userName: 'John Doe',
+              rating: 5,
+              comment: 'Excellent quality jersey! The material is very comfortable and fits perfectly.',
+              date: new Date().toISOString(),
+              productId: 'general',
+              helpful: 0,
+              photo: null
+            },
+            {
+              id: 'sample2', 
+              userName: 'Jane Smith',
+              rating: 4,
+              comment: 'Great product overall. Fast delivery and good packaging.',
+              date: new Date(Date.now() - 86400000).toISOString(),
+              productId: 'general',
+              helpful: 0,
+              photo: null
+            }
+          ]
+          localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(sampleReviews))
+          setReviews(sampleReviews)
+        } else {
+          // Sort by date (newest first)
+          const sortedReviews = parsedReviews.sort((a, b) => 
+            new Date(b.date) - new Date(a.date)
+          )
+          
+          setReviews(sortedReviews)
+        }
         
-        setReviews(sortedReviews)
         setError('')
       } catch (err) {
         setError('Failed to load reviews')

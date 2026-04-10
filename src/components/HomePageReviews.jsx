@@ -6,8 +6,8 @@ import { Star, ChevronRight, MessageCircle, Plus } from 'lucide-react'
 export const HomePageReviews = ({ reviews = [], onAddReview, onDeleteReview }) => {
   const [showForm, setShowForm] = useState(false)
   
-  // Display only first 3 reviews initially
-  const displayedReviews = showForm ? reviews : reviews.slice(0, 3)
+  // Always show all reviews, form is separate
+  const displayedReviews = reviews
   
   const calculateAverageRating = () => {
     if (reviews.length === 0) return 0
@@ -88,13 +88,13 @@ export const HomePageReviews = ({ reviews = [], onAddReview, onDeleteReview }) =
         </div>
 
         {/* See More Button */}
-        {reviews.length > 3 && !showForm && (
+        {reviews.length > 3 && (
           <div className="text-center">
             <button
               onClick={() => setShowForm(true)}
               className="inline-flex items-center gap-2 rounded-full bg-elnova-yellow px-8 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-elnova-yellow/20 transition-all duration-200 hover:scale-[1.02] active:scale-95"
             >
-              See All Reviews ({reviews.length - 3} more)
+              Write a Review
               <ChevronRight 
                 size={16} 
               />
