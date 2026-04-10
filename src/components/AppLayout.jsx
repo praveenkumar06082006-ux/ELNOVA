@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import { FavoritesDrawer } from './FavoritesDrawer'
+import { AppLoading } from './AppLoading'
 import { ProductCard } from './ProductCard'
 import { useProducts } from '../hooks/useProducts'
 import { useAnalytics } from '../hooks/useAnalytics'
@@ -13,6 +14,16 @@ export const AppLayout = () => {
   const [favoriteIds, setFavoriteIds] = useState([])
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [selectedFavoriteProduct, setSelectedFavoriteProduct] = useState(null)
+  const [isAppLoading, setIsAppLoading] = useState(true)
+
+  useEffect(() => {
+    // Hide loading screen after Firebase initializes
+    const timer = setTimeout(() => {
+      setIsAppLoading(false)
+    }, 2000) // 2 seconds
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const favorites = useMemo(
     () => products.filter((item) => favoriteIds.includes(item.id)),
