@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '../firebase'
 
 const REVIEWS_COLLECTION = 'reviews'
 

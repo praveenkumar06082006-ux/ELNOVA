@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { collection, onSnapshot } from 'firebase/firestore'
-import { firestoreDb } from '../firebase'
+import { db } from '../firebase'
 
 const toProductShape = (item, fallbackId) => {
   if (!item || typeof item !== 'object') {
@@ -59,7 +59,7 @@ export const useProducts = () => {
 
   useEffect(() => {
     console.log('Connecting to Firestore collection: products')
-    const productsCollectionRef = collection(firestoreDb, 'products')
+    const productsCollectionRef = collection(db, 'products')
     const unsubscribe = onSnapshot(
       productsCollectionRef,
       (snapshot) => {

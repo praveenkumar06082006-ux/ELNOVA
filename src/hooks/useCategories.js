@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { collection, onSnapshot } from 'firebase/firestore'
-import { firestoreDb } from '../firebase'
+import { db } from '../firebase'
 
 export const useCategories = () => {
   const [categories, setCategories] = useState([])
@@ -8,7 +8,7 @@ export const useCategories = () => {
 
   useEffect(() => {
     // Attempting to read from 'logo' collection as per user instruction
-    const categoriesCollectionRef = collection(firestoreDb, 'logo')
+    const categoriesCollectionRef = collection(db, 'logo')
     const unsubscribe = onSnapshot(
       categoriesCollectionRef,
       (snapshot) => {
