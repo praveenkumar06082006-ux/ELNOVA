@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { ReviewCard } from './ReviewCard'
 import { ReviewForm } from './ReviewForm'
 import { Star, ChevronRight, MessageCircle, Plus } from 'lucide-react'
-import { useFirebaseReviews } from '../hooks/useFirebaseReviews'
+import { useReviews } from '../hooks/useReviews'
 
 export const HomePageReviews = () => {
   const [showForm, setShowForm] = useState(false)
   
-  const { reviews, loading, error, addReview, deleteReview, getAverageRating } = useFirebaseReviews()
+  const { reviews, loading, error, addReview, deleteReview, getAverageRating } = useReviews()
   
   // Always show all reviews
   const displayedReviews = reviews
