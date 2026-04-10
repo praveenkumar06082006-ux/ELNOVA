@@ -49,6 +49,7 @@ export const HomePage = () => {
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
   const [hoveredCategory, setHoveredCategory] = useState(null)
+  const [touchedCategory, setTouchedCategory] = useState(null)
 
   // Auto slide triggers every 12 seconds of inactivity
   useEffect(() => {
@@ -58,8 +59,16 @@ export const HomePage = () => {
     return () => clearInterval(timer)
   }, [activeBanner])
 
+  const getCategoryImage = (categoryName) => {
+    const category = staticCategories.find(
+      (c) => c.name?.toLowerCase() === categoryName.toLowerCase()
+    )
+    return category?.image || category?.imageUrl || category?.logo || category?.url || null
+  }
+
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0]?.clientX)
+    setTouchedCategory(null) // Reset touched category when starting new touch
   }
 
   const handleTouchMove = (e) => {
@@ -73,6 +82,7 @@ export const HomePage = () => {
       handleTouchMove()
     }
     setTouchStart(null)
+    setTouchedCategory(hoveredCategory) // Set touched category to the hovered one
   }
 
   const getCategoryImage = (categoryName) => {
@@ -141,6 +151,9 @@ export const HomePage = () => {
         <div className="flex gap-8 overflow-x-auto pb-2 scrollbar-none snap-x">
           {staticCategories.map((item) => {
             const image = getCategoryImage(item.name)
+            const isHovered = hoveredCategory === item.name || touchedCategory === item.name
+            const isTouched = touchedCategory === item.name
+            
             return (
               <button
                 key={item.name}
@@ -148,13 +161,15 @@ export const HomePage = () => {
                 onMouseEnter={() => setHoveredCategory(item.name)}
                 onMouseLeave={() => setHoveredCategory(null)}
                 className={`relative flex-shrink-0 rounded-[20px] overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 ${
-                  hoveredCategory === item.name ? 'ring-2 ring-elnova-yellow' : 'ring-1 ring-white/10'
+                  isHovered || isTouched 
+                    ? 'ring-2 ring-elnova-yellow scale-110' 
+                    : 'ring-1 ring-white/10 hover:bg-white/20'
                 }`}
               >
                 {/* Circular Image */}
                 <div
                   className={`relative w-48 h-48 rounded-full overflow-hidden transition-all duration-300 ${
-                    hoveredCategory === item.name 
+                    isHovered || isTouched 
                       ? 'bg-elnova-yellow/20 ring-2 ring-elnova-yellow scale-110' 
                       : 'bg-white/10 ring-1 ring-white/10 hover:bg-white/20'
                   }`}
@@ -166,12 +181,16 @@ export const HomePage = () => {
                       className="w-full h-full object-cover"
                     />
                   )}
-                </button>
+                </div>
                 {/* Category Name */}
-                <p className="font-heading text-xl text-white text-center whitespace-nowrap">
-                  {item.name}
-                </p>
-              </div>
+                <div className="absolute inset-x-0 bottom-0 left-0 right-0 flex items-center justify-center bg-black/80 backdrop-blur-sm rounded-b-[20px] p-2 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                  <p className={`text-white font-semibold text-sm transition-colors duration-200 ${
+                    isHovered || isTouched 
+                      ? 'text-elnova-yellow' 
+                      : 'text-white'
+                  }`}>{item.name}</p>
+                </div>
+              </button>
             )
           })}
         </div>
@@ -181,7 +200,7 @@ export const HomePage = () => {
 
       <ProductScrollSection
         title="Best selling :"
-        products={bestSellingProducts}
+        products={getBestSellingProducts()}
         favoriteIds={favoriteIds}
         toggleFavorite={toggleFavorite}
         loading={loading}
