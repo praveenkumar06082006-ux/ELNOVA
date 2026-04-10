@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useMemo, useState, useEffect } from 'react'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import { ProductScrollSection } from '../components/ProductScrollSection'
-import { useOutletContext } from 'react-router-dom'
+import { HomePageReviews } from '../components/HomePageReviews'
 import { useCategories } from '../hooks/useCategories'
 import { useAnalytics } from '../hooks/useAnalytics'
+import { useReviews } from '../hooks/useReviews'
 
 const staticCategories = [
   { name: 'Offers', path: '/offers', text: 'text-white' },
@@ -22,7 +23,7 @@ const banners = [
     subtitleTop: <span className="text-elnova-yellow">Limited offers</span>,
     title: (
       <span className="flex flex-col items-center justify-center">
-         <span className="text-[28px] sm:text-4xl leading-tight whitespace-nowrap pt-1">JUST Starting from</span>
+         <span className="text-[28px] sm:text-4xl leading-tight">JUST Starting from</span>
          <span className="text-[32px] sm:text-5xl leading-tight whitespace-nowrap pt-1">₹ 319/- only</span>
       </span>
     ),
@@ -33,7 +34,7 @@ const banners = [
 const Divider = () => (
   <div className="flex w-full items-center justify-center py-5 opacity-40">
     <div className="h-px w-1/4 bg-gradient-to-r from-transparent via-white to-transparent" />
-    <div className="mx-3 h-1.5 w-1.5 rotate-45 bg-elnova-yellow rounded-full" />
+    <div className="mx-3 h-1.5 w-1.5 rotate-45 bg-elnova-yellow" />
     <div className="h-px w-1/4 bg-gradient-to-l from-transparent via-white to-transparent" />
   </div>
 )
@@ -59,27 +60,60 @@ export const HomePage = () => {
   }, [activeBanner])
 
   const handleTouchStart = (e) => {
-    setTouchStart(e.touches[0]?.clientX)
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
   }
 
   const handleTouchMove = (e) => {
-    if (e.buttons === 1) {
-      setTouchStart({ targetTouches: [{ clientX: e.clientX }] })
-    }
+    setTouchEnd(e.targetTouches[0].clientX)
   }
 
   const handleTouchEnd = () => {
-    if (touchStart) {
-      handleTouchMove()
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+    
+    if (isLeftSwipe || isRightSwipe) {
+      if (isLeftSwipe) {
+        setActiveBanner((prev) => (prev + 1) % banners.length)
+      } else {
+        setActiveBanner((prev) => (prev - 1 + banners.length) % banners.length)
+      }
     }
-    setTouchStart(null)
   }
 
-  const getCategoryImage = (categoryName) => {
-    const category = staticCategories.find(
-      (c) => c.name?.toLowerCase() === categoryName.toLowerCase()
+  const bestSellingProducts = useMemo(() => getBestSellingProducts(products, 6), [products, getBestSellingProducts])
+
+  const getCategoryImage = (name) => {
+    const lowerName = name.toLowerCase()
+
+    // Strategy 1: Find a document where the ID or a "name" field matches the category
+    let remote = remoteCategories.find(
+      (c) => c.name?.toLowerCase() === lowerName || c.id?.toLowerCase() === lowerName
     )
-    return category?.image || category?.imageUrl || category?.logo || category?.url || null
+
+    // Strategy 2: If no document ID matches, check if any document has a field strictly named after the category (e.g. { offers: 'http...' })
+    if (!remote) {
+      const docWithField = remoteCategories.find((c) => c[lowerName] || c[name])
+      if (docWithField) {
+        const val = docWithField[lowerName] || docWithField[name]
+        if (typeof val === 'string' && (val.startsWith('http') || val.startsWith('data:image'))) {
+          return val
+        }
+      }
+    }
+
+    if (!remote) return null
+
+    // If Strategy 1 matched a document, aggressively find any valid image URL inside that document
+    for (const key in remote) {
+       if (typeof remote[key] === 'string' && (remote[key].startsWith('http') || remote[key].startsWith('data:image'))) {
+          return remote[key]
+       }
+    }
+    
+    return remote.image || remote.imageUrl || remote.logo || remote.url || null
   }
 
   return (
@@ -153,11 +187,7 @@ export const HomePage = () => {
               >
                 {/* Circular Image */}
                 <div
-                  className={`relative w-48 h-48 rounded-full overflow-hidden transition-all duration-300 ${
-                    hoveredCategory === item.name 
-                      ? 'bg-elnova-yellow/20 ring-2 ring-elnova-yellow scale-110' 
-                      : 'bg-white/10 ring-1 ring-white/10 hover:bg-white/20'
-                  }`}
+                  className="relative w-48 h-48 rounded-full overflow-hidden bg-[#3a1d60] shadow-md"
                 >
                   {image && (
                     <img
@@ -168,9 +198,9 @@ export const HomePage = () => {
                   )}
                 </button>
                 {/* Category Name */}
-                <p className="font-heading text-xl text-white text-center whitespace-nowrap">
-                  {item.name}
-                </p>
+                <p className={`text-white font-semibold text-sm transition-colors duration-200 ${
+                  hoveredCategory === item.name ? 'text-elnova-yellow' : 'text-white'
+                }`}>{item.name}</p>
               </div>
             )
           })}
