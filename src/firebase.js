@@ -1,10 +1,12 @@
 import { initializeApp } from 'firebase/app'
+import { getDatabase } from 'firebase/database'
 import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBYiHjMULtPBRQaPF2-nRIrKHz-KxSksDo',
   authDomain: 'elnova-store.firebaseapp.com',
+  databaseURL:
+    'https://elnova-store-default-rtdb.asia-southeast1.firebasedatabase.app',
   projectId: 'elnova-store',
   storageBucket: 'elnova-store.firebasestorage.app',
   messagingSenderId: '792050743168',
@@ -14,5 +16,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
-export const db = getFirestore(app)
-export const storage = getStorage(app)
+export const db = getDatabase(app)
+export const firestoreDb = getFirestore(app)
